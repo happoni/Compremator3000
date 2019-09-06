@@ -1,5 +1,5 @@
 # Compremator3000 - Tiralabran harjoitustyö
-Tiralabran harjoitustyö, 2019, periodi 1. Toteutetaan pakkausalgoritmin (Lempel-Ziv) suorittava ohjelma. Harjoitustyössä kirjoitetaan viikkoraportit edistymisestä.
+Tiralabran harjoitustyö, 2019, periodi 1. Toteutetaan pakkausalgoritmin (Lempel-Ziv-Welch) suorittava ohjelma. Ohjelmalla voidaan pakata tiedosto ja purkaa pakattu tiedosto. Harjoitustyössä kirjoitetaan viikkoraportit edistymisestä.
 
 ## Viikkoraportit
 

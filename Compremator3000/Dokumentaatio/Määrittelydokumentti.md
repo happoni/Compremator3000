@@ -39,3 +39,5 @@ algoritmit pystyvät pakkaamaan yhden megatavun kokoisen tiedoston yhdessä seku
 [Lempel-Ziv-Storer-Szymanski](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Storer%E2%80%93Szymanski) (n.d.) Wikipedia. Haettu 6.9.2019.
 
 [Lempel-Ziv-Markov chain algorithm](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov_chain_algorithm) (n.d.) Wikipedia. Haettu 6.9.2019.
+
+[LZW Compression technique](https://www.geeksforgeeks.org/lzw-lempel-ziv-welch-compression-technique/)

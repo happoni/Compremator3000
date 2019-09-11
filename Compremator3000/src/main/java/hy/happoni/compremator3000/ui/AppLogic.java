@@ -22,4 +22,15 @@ public class AppLogic {
         System.out.println(decompressed);
     }
 
+    public void runLZ() {
+        
+    }
+    
+    public void runLZSS() {
+        
+    }
+    
+    public void runLZMA() {
+        
+    }
 }

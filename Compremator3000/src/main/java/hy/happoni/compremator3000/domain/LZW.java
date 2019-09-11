@@ -10,11 +10,11 @@ import java.util.*;
  * aluille.
  */
 public class LZW {
+   
     /** 
      * Metodi saa merkkijonon, jonka se pakkaa algoritmin avulla koodatuksi
      * listaksi.
      */
-    
     public static List<Integer> compress(String uncompressed) {
         // Rakennetaan sanakirja.
         int dictSize = 256;

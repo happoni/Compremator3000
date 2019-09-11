@@ -2,8 +2,6 @@
 package hy.happoni.compremator3000.ui;
 
 import hy.happoni.compremator3000.domain.LZW;
-import static hy.happoni.compremator3000.domain.LZW.compress;
-import static hy.happoni.compremator3000.domain.LZW.decompress;
 import java.util.List;
 
 /**
@@ -18,9 +16,9 @@ public class AppLogic {
     }
 
     public void runLZW() {
-        List<Integer> compressed = compress("TOBEORNOTTOBEORTOBEORNOT");
+        List<Integer> compressed = lzw.compress("TOBEORNOTTOBEORTOBEORNOT");
         System.out.println(compressed);
-        String decompressed = decompress(compressed);
+        String decompressed = lzw.decompress(compressed);
         System.out.println(decompressed);
     }
 

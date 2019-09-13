@@ -13,6 +13,8 @@ Harjoitustyössä kirjoitetaan viikkoraportit edistymisestä.
 
 [Viikkoraportti - viikko 1](https://github.com/happoni/Compremator3000/blob/master/Viikkoraportit/Viikkoraportti_vko1.md)
 
+[Viikkoraportti - viikko 2](https://github.com/happoni/Compremator3000/blob/master/Viikkoraportit/Viikkoraportti_vko2.md)
+
 ## Dokumentaatio
 
 [Määrittelydokumentti](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/Dokumentaatio/M%C3%A4%C3%A4rittelydokumentti.md)

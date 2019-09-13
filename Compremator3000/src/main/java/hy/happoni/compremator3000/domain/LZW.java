@@ -10,68 +10,83 @@ import java.util.*;
  * aluille.
  */
 public class LZW {
-   
-    /** 
+
+    /**
+     * Metodi, joka alustaa sanakirjan LZW-algoritmin pakkausmetodia varten,
+     * @return 
+     */
+    public Map<String, Integer> initDictionary() {
+        Map<String, Integer> dictionary = new HashMap<>();
+        for (int i = 0; i < 256; i++) {
+            dictionary.put("" + (char) i, i);
+        }
+        return dictionary;
+    }
+
+    /**
      * Metodi saa merkkijonon, jonka se pakkaa algoritmin avulla koodatuksi
      * listaksi.
+     *
      * @param uncompressed
-     * @return 
+     * @return
      */
     public List<Integer> compress(String uncompressed) {
         // Rakennetaan sanakirja.
         int dictSize = 256;
-        Map<String,Integer> dictionary = new HashMap<>();
-        for (int i = 0; i < 256; i++)
-            dictionary.put("" + (char)i, i);
- 
+        Map<String, Integer> dictionary = initDictionary();
+
         String w = "";
         List<Integer> result = new ArrayList<>();
         for (char c : uncompressed.toCharArray()) {
             String wc = w + c;
-            if (dictionary.containsKey(wc))
+            if (dictionary.containsKey(wc)) {
                 w = wc;
-            else {
+            } else {
                 result.add(dictionary.get(w));
                 // Lisätään muuttuja wc sanakirjaan.
                 dictionary.put(wc, dictSize++);
                 w = "" + c;
             }
         }
- 
+
         // Merkkijonoa w kuvaava koodi.
-        if (!w.equals(""))
+        if (!w.equals("")) {
             result.add(dictionary.get(w));
+        }
         return result;
     }
- 
-    /** 
+
+    /**
      * Metodi saa koodatun listan, jonka se purkaa merkkijonoksi.
+     *
      * @param compressed
-     * @return 
+     * @return
      */
     public String decompress(List<Integer> compressed) {
         // Rakennetaan sanakirja.
         int dictSize = 256;
-        Map<Integer,String> dictionary = new HashMap<>();
-        for (int i = 0; i < 256; i++)
-            dictionary.put(i, "" + (char)i);
- 
-        String w = "" + (char)(int)compressed.remove(0);
+        Map<Integer, String> dictionary = new HashMap<>();
+        for (int i = 0; i < 256; i++) {
+            dictionary.put(i, "" + (char) i);
+        }
+
+        String w = "" + (char) (int) compressed.remove(0);
         StringBuilder result = new StringBuilder(w);
         for (int k : compressed) {
             String entry;
-            if (dictionary.containsKey(k))
+            if (dictionary.containsKey(k)) {
                 entry = dictionary.get(k);
-            else if (k == dictSize)
+            } else if (k == dictSize) {
                 entry = w + w.charAt(0);
-            else
+            } else {
                 throw new IllegalArgumentException("Bad compressed k: " + k);
- 
+            }
+
             result.append(entry);
- 
+
             // Lisätään merkkijono w ja entryn ensimmäinen merkki sanakirjaan.
             dictionary.put(dictSize++, w + entry.charAt(0));
- 
+
             w = entry;
         }
         return result.toString();

@@ -14,6 +14,7 @@ public class LZTest {
 
     LZ lz1;
     LZ lz2;
+    List<Tuple> codedToBe;
 
     public LZTest() {
     }
@@ -64,6 +65,10 @@ public class LZTest {
         assertFalse(testiTuple2.equals(testiTuple3));
     }
 
-    
-    
+    @Test
+    public void decompressWorksCorrectly() {
+        codedToBe = lz2.compress("TOBEORNOTTOBEORTOBEORNOT");
+        assertEquals(lz2.decompress(codedToBe), "TOBEORNOTTOBEORTOBEORNOT");
+    }
+
 }

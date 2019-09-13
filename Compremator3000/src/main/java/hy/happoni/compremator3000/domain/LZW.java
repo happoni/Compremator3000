@@ -17,7 +17,7 @@ public class LZW {
      * @param uncompressed
      * @return 
      */
-    public static List<Integer> compress(String uncompressed) {
+    public List<Integer> compress(String uncompressed) {
         // Rakennetaan sanakirja.
         int dictSize = 256;
         Map<String,Integer> dictionary = new HashMap<>();
@@ -49,7 +49,7 @@ public class LZW {
      * @param compressed
      * @return 
      */
-    public static String decompress(List<Integer> compressed) {
+    public String decompress(List<Integer> compressed) {
         // Rakennetaan sanakirja.
         int dictSize = 256;
         Map<Integer,String> dictionary = new HashMap<>();

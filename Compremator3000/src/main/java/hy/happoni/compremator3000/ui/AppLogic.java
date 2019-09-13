@@ -1,7 +1,8 @@
 // pakkaus
 package hy.happoni.compremator3000.ui;
 
-import hy.happoni.compremator3000.domain.LZW;
+import hy.happoni.compremator3000.domain.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,9 +11,15 @@ import java.util.List;
 public class AppLogic {
 
     private LZW lzw;
+    private LZ lz;
+    private LZSS lzss;
+    private LZMA lzma;
 
     public AppLogic() {
         this.lzw = new LZW();
+        this.lz = new LZ();
+        this.lzss = new LZSS();
+        this.lzma = new LZMA();
     }
 
     public void runLZW() {
@@ -23,14 +30,17 @@ public class AppLogic {
     }
 
     public void runLZ() {
-        
+        List<Tuple> compressed = lz.compress("TOBEORNOTTOBEORTOBEORNOT");
+        System.out.println(compressed);
+        String decompressed = lz.decompress(compressed);
+        System.out.println(decompressed);
     }
-    
+
     public void runLZSS() {
-        
+
     }
-    
+
     public void runLZMA() {
-        
+
     }
 }

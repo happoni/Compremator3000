@@ -8,9 +8,9 @@ import static org.junit.Assert.*;
 /**
  * Luokka, joka huolehtii LZ77-algoritmin testauksesta.
  */
-public class JZTest {
+public class LZTest {
     
-    public JZTest() {
+    public LZTest() {
     }
     
     @BeforeClass

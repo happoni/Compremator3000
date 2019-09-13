@@ -1,8 +1,10 @@
-// pakkaus
+// Pakkaus.
 package hy.happoni.compremator3000.domain;
 
-// tuodaan tässä vaiheessa kaikki importit
-import java.util.*;
+// Tuodaan tarvittavia importeja, poistetaan myöhemmässä vaiheessa tarpeettomiksi käyneet.
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Luokka, joka huolehtii Lempel-Ziv -algoritmin (LZ77) toteutuksesta. Luokan
@@ -11,13 +13,11 @@ import java.util.*;
  */
 public class LZ {
 
-    // Tuple on luokka, joka pitää kirjaa sanakirjan pisimmän osuman sijainnista,
-    // pisimmän osuman pituudesta ja seuraavasta merkistä pisimmän osuman jälkeen
-    // etsintäikkunassa.
+    // Tuple on luokka, joka pitää kirjaa sanakirjan pisimmän osuman sijainnista, pisimmän osuman pituudesta ja seuraavasta merkistä pisimmän osuman jälkeen bufferissa.
     Tuple thisTuple;
 
     // Lista, johon tuplet säilötään.
-    ArrayList<Tuple> compressedData = new ArrayList<>();
+    ArrayList<Tuple> compressedData;
 
     // Etsintäikkuna
     String searchSubstring;
@@ -29,9 +29,23 @@ public class LZ {
     int searchWindowStart;
     int lookAheadWindowEnd;
 
-    // Etsintäikkunan ja "kurkistusikkunan" pituudet.
-    int searchWindowLength = 31;
-    int lookAheadWindowLength = 7;
+    // Sanakirja ja bufferi.
+    int dictionaryLength;
+    int bufferLength;
+
+    // Konstruktori, jolla voidaan asettaa halutut arvot sanakirjan ja bufferin pituudelle.
+    public LZ(int dictionaryLength, int bufferLength) {
+        this.compressedData = new ArrayList<>();
+        this.dictionaryLength = dictionaryLength;
+        this.bufferLength = bufferLength;
+    }
+
+    // Parametriton konstruktori.
+    public LZ() {
+        this.compressedData = new ArrayList<>();
+        this.dictionaryLength = 31;
+        this.bufferLength = 7;
+    }
 
     /**
      * Metodi, joka pakkaa annetun merkkijonon tupleiksi, eli ns. pakatun koodin
@@ -39,35 +53,31 @@ public class LZ {
      *
      * @param uncompressed - merkkijono, joka halutaan pakata.
      * @return compressedData - lista muuttujia "tuple", jotka kertovat pakatun
-     * merkkijonon kodekit.
+     * merkkijonon koodipalat.
      */
     public List<Tuple> compress(String uncompressed) {
 
         // Käydään merkkijono läpi.
         charCount = 0;
         while (charCount < uncompressed.length()) {
-            // Etsintäikkunan alku. Lause on käytännössä else-if.
-            searchWindowStart = (charCount - searchWindowLength >= 0)
-                    ? charCount - searchWindowLength : 0;
-            // Kurkistusikkunan loppu.
-            lookAheadWindowEnd = (charCount + lookAheadWindowLength < uncompressed.length())
-                    ? charCount + lookAheadWindowLength : uncompressed.length();
-            // Otetaan pala etsintäikkunasta.
+            // Etsintäikkunan alku.
+            searchWindowStart = (charCount - dictionaryLength >= 0) ? charCount - dictionaryLength : 0;
+            // Bufferin loppu.
+            lookAheadWindowEnd = (charCount + bufferLength < uncompressed.length()) ? charCount + bufferLength : uncompressed.length();
+            // Otetaan pala etsintäikkunasta. Jos charCount on nolla, etsintäikkuna on tyhjä.
             if (charCount == 0) {
-                // Aloitetaan tällöin tyhjällä etsintäikkunalla.
                 searchSubstring = "";
             } else {
                 searchSubstring = uncompressed.substring(searchWindowStart, charCount);
             }
-            // Haetaan etsintäikkunasta osumaa kurkistusikkunan seuraavaan merkkiin.
+            // Haetaan etsintäikkunasta osumaa bufferin seuraavaan merkkiin.
             matchLength = 1;
             String searchTarget = uncompressed.substring(charCount, charCount + matchLength);
 
             if (searchSubstring.indexOf(searchTarget) != -1) {
-                // Tällöin on saatu osuma yhden merkin pituiseen merkkijonoon. Tutkitaan,
-                // jatkuuko osuma pidemmälle. Ei kuitenkaan ylitetä kurkistusikkunan pituutta.
+                // Tällöin on saatu osuma yhden merkin pituiseen merkkijonoon. Tutkitaan, jatkuuko osuma pidemmälle. Ei kuitenkaan ylitetä bufferin pituutta.
                 matchLength++;
-                while (matchLength <= lookAheadWindowLength) {
+                while (matchLength <= bufferLength) {
                     // Tutkitaan, miten pitkälle päästään.
                     searchTarget = uncompressed.substring(charCount, charCount + matchLength);
                     matchLocation = searchSubstring.indexOf(searchTarget);
@@ -87,10 +97,8 @@ public class LZ {
                 // Kasvatetaan merkkilaskuria.
                 charCount += matchLength;
 
-                // Laitetaan kodekki tietoon tupleen.
-                int offset = (charCount < (searchWindowLength + matchLength))
-                        ? charCount - matchLocation - matchLength
-                        : searchWindowLength - matchLocation;
+                // Laitetaan koodipala tietoon tupleen.
+                int offset = (charCount < (dictionaryLength + matchLength)) ? charCount - matchLocation - matchLength : dictionaryLength - matchLocation;
 
                 String nextChar = uncompressed.substring(charCount, charCount + 1);
 
@@ -115,7 +123,7 @@ public class LZ {
      */
     public String decompress(List<Tuple> compressed) {
         // Luodaan dekoodattu merkkijono tähän talteen.
-        StringBuffer reconData = new StringBuffer();
+        StringBuilder reconData = new StringBuilder();
         // Haetaan tietoja tuple-listasta.
         Iterator<Tuple> iterator = compressed.iterator();
         while (iterator.hasNext()) {
@@ -126,8 +134,7 @@ public class LZ {
             } else {
                 // Tuple tietää osumista, jes.
                 for (int i = 0; i < nextTuple.stringLength; i++) {
-                    // iteroidaan, ja otetaan offsetin ja pituuden mukaan
-                    // osumat jo rakennetuista paloista.
+                    // iteroidaan, ja otetaan offsetin ja pituuden mukaan osumat jo rakennetuista paloista.
                     char workingChar = reconData.charAt(reconData.length() - nextTuple.offset);
                     reconData.append(workingChar);
                 }
@@ -137,5 +144,4 @@ public class LZ {
         }
         return reconData.toString();
     }
-
 }

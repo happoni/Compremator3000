@@ -13,9 +13,6 @@ import java.util.List;
  */
 public class LZ {
 
-    // Tuple on luokka, joka pitää kirjaa sanakirjan pisimmän osuman sijainnista, pisimmän osuman pituudesta ja seuraavasta merkistä pisimmän osuman jälkeen bufferissa.
-    Tuple thisTuple;
-
     // Lista, johon tuplet säilötään.
     ArrayList<Tuple> compressedData;
 
@@ -27,7 +24,7 @@ public class LZ {
     int matchLocation;
     int charCount;
     int searchWindowStart;
-    int lookAheadWindowEnd;
+    int bufferEnd;
 
     // Sanakirja ja bufferi.
     int dictionaryLength;
@@ -48,41 +45,76 @@ public class LZ {
     }
 
     /**
+     * Metodilla asetetaan LZ77-algoritmin etsintäikkunan alkupiste.
+     * @param charCount - tieto siitä, kuinka mones merkki on käsittelyssä
+     * @param dictionaryLength - tieto sanakirjan pituudesta
+     * @return charCount - dictionaryLength, jos se ei ole negatiivinen, muutoin palautetaan nolla
+     */  
+    public Integer setSearchWindowStart(int charCount, int dictionaryLength) {                 
+         if (charCount - dictionaryLength >= 0) {
+             return charCount - dictionaryLength;
+         }
+         return 0;       
+    }
+    
+    /**
+     * Metodilla asetetaan LZ77-algoritmin bufferin loppupiste.
+     * @param charCount - tieto siitä, mones merkki on käsittelyssä
+     * @param bufferLength - tieto bufferin pituudesta
+     * @param insertLength - tieto pakattavana olevan syötteen pituudesta
+     * @return charCount + bufferLength, jos ne yhdessä ovat lyhyempi kuin syötteen pituus, muutoin syötteen pituus
+     */
+    public Integer setBufferEnd(int charCount, int bufferLength, int insertLength) {
+        if (charCount + bufferLength < insertLength) {
+            return charCount + bufferLength;
+        }
+        return insertLength;
+    }
+    
+    /**
+     * Metodilla asetetaan ikkuna, josta etsitään osumia.
+     * @param input - pakattava merkkijono
+     * @param charCount - tieto siitä, mones merkki on käsittelyssä
+     * @param searchWindowStart - tieto etsintäikkunan alkupisteestä
+     * @return jos charCount on nolla, palautetaan tyhjä merkkijono, muulloin se osamerkkijono, joka on searchWindowStartin ja charCountin välissä syötteessä
+     */
+    public String setSearchSubstring(String input, int charCount, int searchWindowStart) {
+        if (charCount == 0) {
+            return "";
+        }
+        return input.substring(searchWindowStart, charCount);
+    }
+    
+    /**
      * Metodi, joka pakkaa annetun merkkijonon tupleiksi, eli ns. pakatun koodin
      * palasiksi.
-     *
-     * @param uncompressed - merkkijono, joka halutaan pakata.
-     * @return compressedData - lista muuttujia "tuple", jotka kertovat pakatun
-     * merkkijonon koodipalat.
+     * @param input - merkkijono, joka halutaan pakata.
+     * @return compressedData - lista muuttujia "tuple", jotka kertovat pakatun merkkijonon koodipalat.
      */
-    public List<Tuple> compress(String uncompressed) {
-
+    public List<Tuple> compress(String input) {
+        
         // Käydään merkkijono läpi.
         charCount = 0;
-        while (charCount < uncompressed.length()) {
-            // Etsintäikkunan alku.
-            searchWindowStart = (charCount - dictionaryLength >= 0) ? charCount - dictionaryLength : 0;
+        while (charCount < input.length()) {
+            // Asetetaan etsintäikkunan alku.
+            searchWindowStart = setSearchWindowStart(charCount, dictionaryLength);
             // Bufferin loppu.
-            lookAheadWindowEnd = (charCount + bufferLength < uncompressed.length()) ? charCount + bufferLength : uncompressed.length();
+            bufferEnd = setBufferEnd(charCount, bufferLength, input.length());
             // Otetaan pala etsintäikkunasta. Jos charCount on nolla, etsintäikkuna on tyhjä.
-            if (charCount == 0) {
-                searchSubstring = "";
-            } else {
-                searchSubstring = uncompressed.substring(searchWindowStart, charCount);
-            }
+            searchSubstring = setSearchSubstring(input, charCount, searchWindowStart);
             // Haetaan etsintäikkunasta osumaa bufferin seuraavaan merkkiin.
             matchLength = 1;
-            String searchTarget = uncompressed.substring(charCount, charCount + matchLength);
+            String searchTarget = input.substring(charCount, charCount + matchLength);
 
-            if (searchSubstring.indexOf(searchTarget) != -1) {
+            if (searchSubstring.contains(searchTarget)) {
                 // Tällöin on saatu osuma yhden merkin pituiseen merkkijonoon. Tutkitaan, jatkuuko osuma pidemmälle. Ei kuitenkaan ylitetä bufferin pituutta.
                 matchLength++;
                 while (matchLength <= bufferLength) {
                     // Tutkitaan, miten pitkälle päästään.
-                    searchTarget = uncompressed.substring(charCount, charCount + matchLength);
+                    searchTarget = input.substring(charCount, charCount + matchLength);
                     matchLocation = searchSubstring.indexOf(searchTarget);
 
-                    if ((matchLocation != -1) && (charCount + matchLength) < uncompressed.length()) {
+                    if ((matchLocation != -1) && (charCount + matchLength) < input.length()) {
                         matchLength++;
                     } else {
                         break;
@@ -90,24 +122,18 @@ public class LZ {
                 }
                 // Asetetaan osuman pituus.
                 matchLength--;
-
                 // Haetaan etsintäikkunasta viimeisimmän osuman sijainti.
-                matchLocation = searchSubstring.indexOf(uncompressed.substring(charCount, charCount + matchLength));
-
+                matchLocation = searchSubstring.indexOf(input.substring(charCount, charCount + matchLength));
                 // Kasvatetaan merkkilaskuria.
                 charCount += matchLength;
-
+                
                 // Laitetaan koodipala tietoon tupleen.
                 int offset = (charCount < (dictionaryLength + matchLength)) ? charCount - matchLocation - matchLength : dictionaryLength - matchLocation;
-
-                String nextChar = uncompressed.substring(charCount, charCount + 1);
-
-                thisTuple = new Tuple(offset, matchLength, nextChar);
-                compressedData.add(thisTuple);
+                String nextChar = input.substring(charCount, charCount + 1);
+                compressedData.add(new Tuple(offset, matchLength, nextChar));
             } else {
-                String nextChar = uncompressed.substring(charCount, charCount + 1);
-                thisTuple = new Tuple(0, 0, nextChar);
-                compressedData.add(thisTuple);
+                String nextChar = input.substring(charCount, charCount + 1);
+                compressedData.add(new Tuple(0, 0, nextChar));
             }
             // Kasvatetaan merkkilaskuria.
             charCount++;
@@ -116,10 +142,10 @@ public class LZ {
     }
 
     /**
-     * Metodi purkaa syötteenä annetun pakatun tiedoston.
+     * Metodi purkaa syötteenä annetun pakatun tiedoston, eli käytännössä listan muuttujia tuple.
      *
-     * @param compressed
-     * @return
+     * @param compressed - 
+     * @return reconData - toString()-metodin avulla muodostettu merkkijono.
      */
     public String decompress(List<Tuple> compressed) {
         // Luodaan dekoodattu merkkijono tähän talteen.

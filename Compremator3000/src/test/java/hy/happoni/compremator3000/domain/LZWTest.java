@@ -1,3 +1,5 @@
+package hy.happoni.compremator3000.domain;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -6,11 +8,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Luokka, joka huolehtii LZ77-algoritmin testauksesta.
+ * Luokka, joka huolehtii LZW-algoritmin testauksesta.
  */
-public class LZTest {
+public class LZWTest {
     
-    public LZTest() {
+    public LZWTest() {
     }
     
     @BeforeClass
@@ -29,6 +31,9 @@ public class LZTest {
     public void tearDown() {
     }
 
+    // TODO add test methods here.
+    // The methods must be annotated with annotation @Test. For example:
+    //
     // @Test
     // public void hello() {}
 }

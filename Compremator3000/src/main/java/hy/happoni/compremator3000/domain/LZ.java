@@ -50,7 +50,7 @@ public class LZ {
      * @param dictionaryLength - tieto sanakirjan pituudesta
      * @return charCount - dictionaryLength, jos se ei ole negatiivinen, muutoin palautetaan nolla
      */  
-    public Integer setSearchWindowStart(int charCount, int dictionaryLength) {                 
+    public int setSearchWindowStart(int charCount, int dictionaryLength) {                 
          if (charCount - dictionaryLength >= 0) {
              return charCount - dictionaryLength;
          }
@@ -64,7 +64,7 @@ public class LZ {
      * @param insertLength - tieto pakattavana olevan syötteen pituudesta
      * @return charCount + bufferLength, jos ne yhdessä ovat lyhyempi kuin syötteen pituus, muutoin syötteen pituus
      */
-    public Integer setBufferEnd(int charCount, int bufferLength, int insertLength) {
+    public int setBufferEnd(int charCount, int bufferLength, int insertLength) {
         if (charCount + bufferLength < insertLength) {
             return charCount + bufferLength;
         }

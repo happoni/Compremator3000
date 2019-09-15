@@ -17,5 +17,6 @@ public class UI {
     public void startApp() {
         logic.runLZW();
         logic.runLZ();
+        logic.runLZSS();
     }
 }

@@ -37,7 +37,10 @@ public class AppLogic {
     }
 
     public void runLZSS() {
-
+        List<LZSSTuple> compressed = lzss.compress("TOBEORNOTTOBEORTOBEORNOT");
+        System.out.println(compressed);
+        String decompressed = lzss.decompress(compressed);
+        System.out.println(decompressed);
     }
 
     public void runLZMA() {

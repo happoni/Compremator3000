@@ -20,6 +20,8 @@ ne ovat vielä melko köykäisiä.
 
 Kahta muuta algoritmia en ole vielä ehtinyt aloittaa koodaamaan, tarkoitus olisi tehdä ne mahdollisimman pian.
 
+*Päivitys 15.9.19: hieman dediksen ulkopuolella LZSS-algoritmi on valmistunut.*
+
 ### Opitut asiat
 
 Seikkaperäistä oppia on tullut LZ77-algoritmin toimintaperiaatteesta. Kävin asiaa paperillakin läpi ja erityisesti algoritmin metodien pilkkominen auttoi ymmärtämään sen

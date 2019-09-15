@@ -1,6 +1,7 @@
 // pakkaus
 package hy.happoni.compremator3000.domain;
 
+// tuodaan tässä vaiheessa tarvittavia importteja
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +15,7 @@ public class LZSS {
     // Lista, johon tuplet säilötään.
     ArrayList<LZSSTuple> compressedData;
 
-    // Etsintäikkuna
+    // Etsintäikkunan teksti
     String searchSubstring;
 
     // Apumuuttujia, joita tarvitaan algoritmin toiminnassa.
@@ -111,13 +112,19 @@ public class LZSS {
             searchSubstring = setSearchSubstring(input, charCount, searchWindowStart);
             // Haetaan etsintäikkunasta osumaa bufferin seuraavaan merkkiin.
             matchLength = 3;
+
+            if (charCount + matchLength >= input.length()) {
+                matchLength = input.length() - charCount;
+            }
+
             String searchTarget = input.substring(charCount, charCount + matchLength);
 
             if (searchSubstring.contains(searchTarget)) {
                 // Tällöin on saatu osuma kolmen merkin pituiseen merkkijonoon. Tutkitaan, jatkuuko osuma pidemmälle. Ei kuitenkaan ylitetä bufferin pituutta.
                 matchLength++;
-                while (matchLength <= bufferLength) {
+                while (charCount + matchLength <= bufferEnd) {
                     // Tutkitaan, miten pitkälle päästään.
+
                     searchTarget = input.substring(charCount, charCount + matchLength);
                     matchLocation = searchSubstring.indexOf(searchTarget);
 
@@ -135,15 +142,14 @@ public class LZSS {
                 charCount += matchLength;
 
                 // Laitetaan koodipala tietoon tupleen.
- 
                 compressedData.add(new LZSSTuple(false, matchLocation, matchLength));
             } else {
                 String nextChar = input.substring(charCount, charCount + 1);
                 compressedData.add(new LZSSTuple(true, nextChar));
+                charCount++;
             }
-            // Kasvatetaan merkkilaskuria.
-            charCount++;
-            System.out.println(charCount);
+            // debuggausta varten
+            // System.out.println(charCount);
         }
         return compressedData;
     }
@@ -166,10 +172,8 @@ public class LZSS {
                 // Ei osumia tälle merkille.
                 reconData.append(nextTuple.character);
             } else {
-                
-                String workingStr = reconData.substring(nextTuple.position, nextTuple.length);
+                String workingStr = reconData.substring(nextTuple.position, (nextTuple.length + nextTuple.position));
                 reconData.append(workingStr);
-
             }
         }
         return reconData.toString();

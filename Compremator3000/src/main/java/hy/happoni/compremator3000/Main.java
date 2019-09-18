@@ -2,12 +2,17 @@
 package hy.happoni.compremator3000;
 
 // tuodaan tarvittavat palaset
+import hy.happoni.compremator3000.ui.AppLogic;
 import hy.happoni.compremator3000.ui.UI;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-        UI ui = new UI();
+        AppLogic logic = new AppLogic();
+        Scanner reader = new Scanner(System.in);
+        
+        UI ui = new UI(logic, reader);
 
         ui.startApp();
     }

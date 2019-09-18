@@ -45,3 +45,5 @@ algoritmit pystyvät pakkaamaan yhden megatavun kokoisen tiedoston yhdessä seku
 [LZW Compression](http://rosettacode.org/wiki/LZW_compression) (n.d.) Rosettacode. Haettu 11.9.2019.
 
 [Understanding the Lempel-Ziv Data Compression Algorithm in Java](https://www.developer.com/java/data/article.php/3586396/Understanding-the-Lempel-Ziv-Data-Compression-Algorithm-in-Java.htm) Baldwin R. G. Developer.com. Haettu 13.9.2019.
+
+[LZSS (LZ77) Discussion and Implementation](http://michael.dipperstein.com/lzss/). Dipperstein M. Haettu 15.9.2019.

@@ -13,13 +13,11 @@ public class AppLogic {
     private LZW lzw;
     private LZ lz;
     private LZSS lzss;
-    private LZMA lzma;
 
     public AppLogic() {
         this.lzw = new LZW();
         this.lz = new LZ();
         this.lzss = new LZSS();
-        this.lzma = new LZMA();
     }
 
     public void runLZW() {
@@ -43,7 +41,4 @@ public class AppLogic {
         System.out.println(decompressed);
     }
 
-    public void runLZMA() {
-
-    }
 }

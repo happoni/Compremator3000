@@ -1,6 +1,7 @@
 // Pakkaus
 package hy.happoni.compremator3000.ui;
 
+// Scannerin import käyttäjän syötteiden lukua varten.
 import java.util.Scanner;
 
 /**
@@ -8,30 +9,36 @@ import java.util.Scanner;
  */
 public class UI {
 
+    // tarvittavia muuttujia
     private Scanner reader;
     private AppLogic logic;
 
+    // konstruktori
     public UI(AppLogic logic, Scanner reader) {
         this.reader = reader;
         this.logic = logic;
     }
 
+    /**
+     * Ohjelman käyttöliittymän toiminnan käynnistävä metodi. Käytännössä tulostaa otsikon ja 
+     * kutsuu käyttöliittymän main menu -metodia.
+     */
     public void startApp() {
+        // Ohjelman otsikko
         System.out.println("COMPREMATOR3000");
-        System.out.println("Text compression program using LZ77, LZW and/or LZSS.");
-
+        System.out.println("Text compression program using LZ77, LZW and/or LZSS.");       
         mainMenu();
-        System.out.println();
-
     }
 
     /**
      * Metodi tulostaa main menun ohjetekstin ja huolehtii valinnan syötöstä
      * eteenpäin.
      *
-     * @return choice - käyttäjän antama syöte. Muut kuin 0, 1 tai 2 hylätään.
+     * @return choice - käyttäjän antama syöte. 1:llä ja 2:lla kutsutaan ao. metodeja, x:llä lopetetaan ohjelman suoritus
+     * ja muilla syötteillä annetaan ohjeet ja kysytään syötettä uudestaan.
      */
     private void mainMenu() {
+        // Main menun ohjeet. Epäkelvolla syötteellä silmukka jatkaa pyörimistään, kunnes annetaan kelvollinen syöte.
         while (true) {
             System.out.println();
             System.out.println("What would you like to do?");
@@ -52,14 +59,22 @@ public class UI {
         }
     }
 
+    /**
+     * Asettaa pakattavaksi tekstiksi testitekstin "TOBEORNOTTOBEORTOBEORNOT".
+     */
     private void useTestText() {
         choiceCompressMethod("TOBEORNOTTOBEORTOBEORNOT");
     }
     
     /**
-     * Metodi...
+     * Käyttöliittymän osa, jossa kysytään, mitä algoritmia valitun tekstin pakkaamiseen käytetään.
+     * Tulostaa alkuun pakattavan tekstin ja antaa valita LZ77:n (1), LZW:n(2), LZSS:n(3) tai kaikki nämä (4). x:llä metodin suoritus loppuu.
+     * Metodi kutsuu valinnan mukaan sovelluslogiikan ao. metodia. Epäkelpo syöte johtaa ohjetekstin uudelleentulostukseen.
+     * 
+     * @param text - Teksti, joka pakataan. Joko käyttäjän syöttämä tai valmis testiteksti.
      */
     private void choiceCompressMethod(String text) {
+        // Valintaikkunan ohjeteksti.
         while (true) {
             System.out.println("Text is \"" + text + "\"");
             System.out.println("What algorithm shall we use to compress it?");
@@ -72,65 +87,34 @@ public class UI {
             System.out.print("> ");
             String choice = reader.nextLine();            
             
+            // Valinnan mukaan kutsutaan ao. metodeja.
             if (choice.equals("1")) {                
-                useLZ(text);
+                logic.runLZ(text);
                 break;
             } else if (choice.equals("2")) {
-                useLZW(text);
+                logic.runLZW(text);
                 break;
             } else if (choice.equals("3")) {
-                useLZSS(text);
+                logic.runLZSS(text);
                 break;
             } else if (choice.equals("4")) {
-                useAll(text);
+                logic.runAll(text);
             } else if (choice.equals("x")) {
                 break;
             }
         }
     }
-
-    /**
-     * Metodi...
-     * @param text 
-     */
-    private void useLZ(String text) {
-        logic.runLZ(text);
-    }
     
     /**
-     * Metodi...
-     * @param text 
-     */
-    private void useLZW(String text) {
-        logic.runLZW(text);
-    }
-    
-    /**
-     * Metodi...
-     * @param text 
-     */
-    private void useLZSS(String text) {
-        logic.runLZSS(text);
-    }
-    
-    /**
-     * Metodi...
-     * @param text 
-     */
-    private void useAll(String text) {
-        useLZ(text);
-        useLZW(text);
-        useLZSS(text);
-    }
-    
-    /**
-     * Metodi...
+     * Metodi, jolla asetetaan käyttäjän oma syöte pakattavaksi tekstiksi.
      */
     private void insertOwnText() {
+        // Pyydetään syöte käyttäjältä.
         System.out.println("Please insert your own text to compress:");
         String userText = reader.nextLine();
         // tähän tarvittaessa syötteen validointi!
         
+        // Jatketaan käyttöliittymässä eteenpäin.
         choiceCompressMethod(userText);                
     }
 

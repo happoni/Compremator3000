@@ -68,7 +68,7 @@ public class UI {
      */
     private void readFile() {
         // Pyydetään tiedoston polku käyttäjältä.
-        System.out.println("Please insert full path of text file:");
+        System.out.println("Please insert name of text file:");
         String filePath = reader.nextLine();
         // tähän tarvittaessa syötteen validointi!
 

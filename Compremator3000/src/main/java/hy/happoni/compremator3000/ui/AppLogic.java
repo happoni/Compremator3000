@@ -3,6 +3,7 @@ package hy.happoni.compremator3000.ui;
 
 // tällä hetkellä tarvittavat importit
 import hy.happoni.compremator3000.domain.*;
+import hy.happoni.compremator3000.io.FileIO;
 import java.util.List;
 
 /**
@@ -11,17 +12,29 @@ import java.util.List;
 public class AppLogic {
 
     // tarvittavat muuttujat, käytännössä algoritmit suorittavat luokat
+    private FileIO fileIo;
     private LZW lzw;
     private LZ lz;
     private LZSS lzss;
 
     // konstruktori
     public AppLogic() {
+        this.fileIo = new FileIO();
         this.lzw = new LZW();
         this.lz = new LZ();
         this.lzss = new LZSS();
     }
 
+    /**
+     * Luetaan fileIO:n avulla annetun polun päässä oleva tekstitiedosto merkkijonoksi.
+     * 
+     * @param filePath - tiedoston polku 
+     * @return  - tiedoston teksti merkkijonona
+     */
+    public String readFile(String filePath) {                
+        return fileIo.readFile(filePath);
+    }
+    
     /**
      * LZW-algoritmin ajava metodi. Tällä hetkellä pakkaa ja purkaa annetun tekstin ja tulostaa "pakkauskoodin", ja tekstin purkamisen jälkeen.
      * 

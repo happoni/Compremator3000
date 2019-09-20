@@ -20,13 +20,13 @@ public class UI {
     }
 
     /**
-     * Ohjelman käyttöliittymän toiminnan käynnistävä metodi. Käytännössä tulostaa otsikon ja 
-     * kutsuu käyttöliittymän main menu -metodia.
+     * Ohjelman käyttöliittymän toiminnan käynnistävä metodi. Käytännössä
+     * tulostaa otsikon ja kutsuu käyttöliittymän main menu -metodia.
      */
     public void startApp() {
         // Ohjelman otsikko
         System.out.println("COMPREMATOR3000");
-        System.out.println("Text compression program using LZ77, LZW and/or LZSS.");       
+        System.out.println("Text compression program using LZ77, LZW and/or LZSS.");
         mainMenu();
     }
 
@@ -34,8 +34,9 @@ public class UI {
      * Metodi tulostaa main menun ohjetekstin ja huolehtii valinnan syötöstä
      * eteenpäin.
      *
-     * @return choice - käyttäjän antama syöte. 1:llä ja 2:lla kutsutaan ao. metodeja, x:llä lopetetaan ohjelman suoritus
-     * ja muilla syötteillä annetaan ohjeet ja kysytään syötettä uudestaan.
+     * @return choice - käyttäjän antama syöte. 1:llä ja 2:lla kutsutaan ao.
+     * metodeja, x:llä lopetetaan ohjelman suoritus ja muilla syötteillä
+     * annetaan ohjeet ja kysytään syötettä uudestaan.
      */
     private void mainMenu() {
         // Main menun ohjeet. Epäkelvolla syötteellä silmukka jatkaa pyörimistään, kunnes annetaan kelvollinen syöte.
@@ -44,6 +45,7 @@ public class UI {
             System.out.println("What would you like to do?");
             System.out.println("[1] -- Use test text \"TOBEORNOTTOBEORTOBEORNOT\"");
             System.out.println("[2] -- Insert your own text to be compressed");
+            System.out.println("[3] -- Read text file and compress it.");
             System.out.println("[x] -- Exit program");
 
             System.out.print("> ");
@@ -53,10 +55,27 @@ public class UI {
                 useTestText();
             } else if (choice.equals("2")) {
                 insertOwnText();
+            } else if (choice.equals("3")) {
+                readFile();
             } else if (choice.equals("x")) {
                 break;
             }
         }
+    }
+
+    /**
+     * Metodin avulla luetaan tekstitiedosto ja saadaan siitä merkkijono.
+     */
+    private void readFile() {
+        // Pyydetään tiedoston polku käyttäjältä.
+        System.out.println("Please insert full path of text file:");
+        String filePath = reader.nextLine();
+        // tähän tarvittaessa syötteen validointi!
+
+        String fileText = logic.readFile(filePath);
+        
+        // Jatketaan käyttöliittymässä eteenpäin.
+        choiceCompressMethod(fileText);
     }
 
     /**
@@ -65,13 +84,16 @@ public class UI {
     private void useTestText() {
         choiceCompressMethod("TOBEORNOTTOBEORTOBEORNOT");
     }
-    
+
     /**
-     * Käyttöliittymän osa, jossa kysytään, mitä algoritmia valitun tekstin pakkaamiseen käytetään.
-     * Tulostaa alkuun pakattavan tekstin ja antaa valita LZ77:n (1), LZW:n(2), LZSS:n(3) tai kaikki nämä (4). x:llä metodin suoritus loppuu.
-     * Metodi kutsuu valinnan mukaan sovelluslogiikan ao. metodia. Epäkelpo syöte johtaa ohjetekstin uudelleentulostukseen.
-     * 
-     * @param text - Teksti, joka pakataan. Joko käyttäjän syöttämä tai valmis testiteksti.
+     * Käyttöliittymän osa, jossa kysytään, mitä algoritmia valitun tekstin
+     * pakkaamiseen käytetään. Tulostaa alkuun pakattavan tekstin ja antaa
+     * valita LZ77:n (1), LZW:n(2), LZSS:n(3) tai kaikki nämä (4). x:llä metodin
+     * suoritus loppuu. Metodi kutsuu valinnan mukaan sovelluslogiikan ao.
+     * metodia. Epäkelpo syöte johtaa ohjetekstin uudelleentulostukseen.
+     *
+     * @param text - Teksti, joka pakataan. Joko käyttäjän syöttämä tai valmis
+     * testiteksti.
      */
     private void choiceCompressMethod(String text) {
         // Valintaikkunan ohjeteksti.
@@ -85,10 +107,10 @@ public class UI {
             System.out.println("[x] -- Back to main menu.");
 
             System.out.print("> ");
-            String choice = reader.nextLine();            
-            
+            String choice = reader.nextLine();
+
             // Valinnan mukaan kutsutaan ao. metodeja.
-            if (choice.equals("1")) {                
+            if (choice.equals("1")) {
                 logic.runLZ(text);
                 break;
             } else if (choice.equals("2")) {
@@ -104,7 +126,7 @@ public class UI {
             }
         }
     }
-    
+
     /**
      * Metodi, jolla asetetaan käyttäjän oma syöte pakattavaksi tekstiksi.
      */
@@ -113,9 +135,9 @@ public class UI {
         System.out.println("Please insert your own text to compress:");
         String userText = reader.nextLine();
         // tähän tarvittaessa syötteen validointi!
-        
+
         // Jatketaan käyttöliittymässä eteenpäin.
-        choiceCompressMethod(userText);                
+        choiceCompressMethod(userText);
     }
 
 }

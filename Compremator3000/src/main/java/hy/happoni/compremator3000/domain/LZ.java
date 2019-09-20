@@ -46,6 +46,7 @@ public class LZ {
 
     /**
      * Metodilla asetetaan LZ77-algoritmin etsintäikkunan alkupiste.
+     * 
      * @param charCount - tieto siitä, kuinka mones merkki on käsittelyssä
      * @param dictionaryLength - tieto sanakirjan pituudesta
      * @return charCount - dictionaryLength, jos se ei ole negatiivinen, muutoin palautetaan nolla
@@ -61,14 +62,14 @@ public class LZ {
      * Metodilla asetetaan LZ77-algoritmin bufferin loppupiste.
      * @param charCount - tieto siitä, mones merkki on käsittelyssä
      * @param bufferLength - tieto bufferin pituudesta
-     * @param insertLength - tieto pakattavana olevan syötteen pituudesta
+     * @param inputLength - tieto pakattavana olevan syötteen pituudesta
      * @return charCount + bufferLength, jos ne yhdessä ovat lyhyempi kuin syötteen pituus, muutoin syötteen pituus
      */
-    public int setBufferEnd(int charCount, int bufferLength, int insertLength) {
-        if (charCount + bufferLength < insertLength) {
+    public int setBufferEnd(int charCount, int bufferLength, int inputLength) {
+        if (charCount + bufferLength < inputLength) {
             return charCount + bufferLength;
         }
-        return insertLength;
+        return inputLength;
     }
     
     /**
@@ -108,7 +109,6 @@ public class LZ {
 
             if (searchSubstring.contains(searchTarget)) {
                 // Tällöin on saatu osuma yhden merkin pituiseen merkkijonoon. Tutkitaan, jatkuuko osuma pidemmälle. Ei kuitenkaan ylitetä bufferin pituutta.
-                matchLength++;
                 while (matchLength <= bufferLength) {
                     // Tutkitaan, miten pitkälle päästään.
                     searchTarget = input.substring(charCount, charCount + matchLength);

@@ -15,5 +15,10 @@ public class Main {
         UI ui = new UI(logic, reader);
 
         ui.startApp();
+
+
+//        String a = "lasinilkka";
+//        String b = a.substring(0, 10);
+//        System.out.println(b);
     }
 }

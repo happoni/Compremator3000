@@ -20,22 +20,22 @@ public class AppLogic {
         this.lzss = new LZSS();
     }
 
-    public void runLZW() {
-        List<Integer> compressed = lzw.compress("TOBEORNOTTOBEORTOBEORNOT");
+    public void runLZW(String text) {
+        List<Integer> compressed = lzw.compress(text);
         System.out.println(compressed);
         String decompressed = lzw.decompress(compressed);
         System.out.println(decompressed);
     }
 
-    public void runLZ() {
-        List<Tuple> compressed = lz.compress("TOBEORNOTTOBEORTOBEORNOT");
+    public void runLZ(String text) {
+        List<Tuple> compressed = lz.compress(text);
         System.out.println(compressed);
         String decompressed = lz.decompress(compressed);
         System.out.println(decompressed);
     }
 
-    public void runLZSS() {
-        List<LZSSTuple> compressed = lzss.compress("TOBEORNOTTOBEORTOBEORNOT");
+    public void runLZSS(String text) {
+        List<LZSSTuple> compressed = lzss.compress(text);
         System.out.println(compressed);
         String decompressed = lzss.decompress(compressed);
         System.out.println(decompressed);

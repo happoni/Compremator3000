@@ -54,7 +54,7 @@ public class FileIO {
             os.close();
             return true;
         } catch (FileNotFoundException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Something has gone wrong.");
         }
         return false;
     }

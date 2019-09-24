@@ -2,6 +2,7 @@
 package hy.happoni.compremator3000.io;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import org.junit.After;
@@ -14,6 +15,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -24,6 +26,7 @@ public class FileIOTest {
     // luodaan väliaikainen testikansio
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
+    public ExpectedException expectedEx = ExpectedException.none();
 
     File testReadFile;
     File testWriteFile;
@@ -58,7 +61,16 @@ public class FileIOTest {
 
         Assert.assertArrayEquals(returnedBytes, testBytes);
         assertEquals(returnedString, testText);
-        assertFalse(returnedString.contains("666"));
+        assertFalse(returnedString.contains("666"));        
+    }
+    
+    /**
+     * Testillä tarkistetaan, että tiedoston lukemisen epäonnistuminen aiheuttaa poikkeuksen.
+     */
+    @Test
+    public void failingReadFileThrowsException() {
+        expectedEx.expect(IOException.class);
+        FileIO.readFile("eiloydy.txt");
     }
 
     /**
@@ -68,7 +80,18 @@ public class FileIOTest {
     @Test
     public void writeFileWritesCorrectText() throws IOException {
         assertTrue(FileIO.writeFile(testBytes, testWritePath, ""));
-        Assert.assertArrayEquals(FileIO.readFile(testWritePath), testBytes);
+        Assert.assertArrayEquals(FileIO.readFile(testWritePath), testBytes);      
+    }
+    
+    /**
+     * Testillä tarkistetaan, että tekstin kirjoittamisen epäonnistuessa tulee asianmukainen virhe.
+     * @throws Exception 
+     */
+    @Test
+    public void writeFileThrowsErrorWhenFileNotFound() throws Exception {
+        expectedEx.expect(FileNotFoundException.class);
+        expectedEx.expectMessage("Something has gone wrong.");
+        FileIO.writeFile(testBytes, "eiloydy.txt", "");
     }
     
     @After

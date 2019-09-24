@@ -25,15 +25,15 @@ public class AppLogic {
         this.lzss = new LZSS();
     }
 
-    /**
-     * Luetaan fileIO:n avulla annetun polun päässä oleva tekstitiedosto merkkijonoksi.
-     * 
-     * @param filePath - tiedoston polku 
-     * @return  - tiedoston teksti merkkijonona
-     */
-    public String readFile(String filePath) {                
-        return fileIo.readFile(filePath);
-    }
+//    /**
+//     * Luetaan fileIO:n avulla annetun polun päässä oleva tekstitiedosto merkkijonoksi.
+//     * 
+//     * @param filePath - tiedoston polku 
+//     * @return  - tiedoston teksti merkkijonona
+//     */
+//    public String readFile(String filePath) {                
+//        return fileIo.readFile(filePath);
+//    }
     
     /**
      * LZW-algoritmin ajava metodi. Tällä hetkellä pakkaa ja purkaa annetun tekstin ja tulostaa "pakkauskoodin", ja tekstin purkamisen jälkeen.

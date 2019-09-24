@@ -1,36 +1,61 @@
 // pakkaus
 package hy.happoni.compremator3000.io;
 
+// tarvittavat importit
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
 
 /**
  * Luokka, joka huolehtii tekstitiedoston lukemisesta ja luomisesta.
  */
 public class FileIO {
-    
+
     /**
-     * Metodi, jolla luetaan tekstitiedosto merkkijonoksi.
-     * 
-     * @param filepath - tekstitiedoston polku
-     * @return - tekstitiedostosta haettu merkkijonoesitys
+     * Metodi, jolla luetaan tekstitiedosto tavulistaksi.
+     *
+     * @param filePath - tekstitiedoston polku/nimi
+     * @return - tekstitiedostosta haettu tavulista
      */
-    public String readFile(String filepath) {
-        
-        StringBuilder builder = new StringBuilder();
-        
-        try (Stream<String> stream = Files.lines( Paths.get(filepath), StandardCharsets.UTF_8))
-        {
-            stream.forEach(s -> builder.append(s));
+    public static byte[] readFile(String filePath) {
+        byte[] input = null;
+        Path path = Paths.get(filePath);
+
+        try {
+            input = Files.readAllBytes(path);
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
         }
-        catch (IOException e) {
-            e.getMessage();
-            System.out.println(e);
-        }
-        return builder.toString();
+        return input;
     }
-    
+
+    /**
+     * Metodi kirjoittaa annetut tavut tiedostoon. Voidaan käyttää sekä pakatun tekstin kirjoittamiseen tiedostoksi että
+     * puretun tiedoston kirjoittamiseksi tekstitiedostoksi. Pakatessa metodi lisää sen nimen perään päätteen sen algoritmin
+     * mukaan, jolla se on pakattu (.lz, .lzw, .lzss).
+     * 
+     * @param encoded - tavulista, joka sisältää pakatun tiedoston "koodin"
+     * @param filepath - tiedoston polku/nimi
+     * @param algoType - algoritmin, jolla pakkaus tehty, tiedoston pääte
+     * @return - palauttaa true, jos kirjoitus onnistui, muulloin false
+     * @throws java.io.IOException
+     */
+    public static boolean writeFile(byte[] encoded, String filepath, String algoType) throws IOException {
+        File file = new File(filepath + algoType);
+
+        try {
+            FileOutputStream os = new FileOutputStream(file);
+            os.write(encoded);
+            System.out.println("File wrote succesfully.");
+            os.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
 }

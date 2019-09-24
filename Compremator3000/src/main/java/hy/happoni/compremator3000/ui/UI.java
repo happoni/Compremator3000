@@ -43,40 +43,40 @@ public class UI {
         while (true) {
             System.out.println();
             System.out.println("What would you like to do?");
-            System.out.println("[1] -- Use test text \"TOBEORNOTTOBEORTOBEORNOT\"");
-            System.out.println("[2] -- Insert your own text to be compressed");
-            System.out.println("[3] -- Read text file and compress it.");
+            System.out.println("[1] -- Insert text to demonstrate compression results.");
+            System.out.println("[2] -- Read text file and compress it.");
+            System.out.println("[3] -- Uncompress compressed text file.");
             System.out.println("[x] -- Exit program");
 
             System.out.print("> ");
             String choice = reader.nextLine();
 
             if (choice.equals("1")) {
-                useTestText();
+                insertOwnText();
             } else if (choice.equals("2")) {
                 insertOwnText();
             } else if (choice.equals("3")) {
-                readFile();
+                
             } else if (choice.equals("x")) {
                 break;
             }
         }
     }
 
-    /**
-     * Metodin avulla luetaan tekstitiedosto ja saadaan siitä merkkijono.
-     */
-    private void readFile() {
-        // Pyydetään tiedoston polku käyttäjältä.
-        System.out.println("Please insert name of text file:");
-        String filePath = reader.nextLine();
-        // tähän tarvittaessa syötteen validointi!
-
-        String fileText = logic.readFile(filePath);
-        
-        // Jatketaan käyttöliittymässä eteenpäin.
-        choiceCompressMethod(fileText);
-    }
+//    /**
+//     * Metodin avulla luetaan tekstitiedosto ja saadaan siitä merkkijono.
+//     */
+//    private void readFile() {
+//        // Pyydetään tiedoston polku käyttäjältä.
+//        System.out.println("Please insert name of text file:");
+//        String filePath = reader.nextLine();
+//        // tähän tarvittaessa syötteen validointi!
+//
+////        String fileText = logic.readFile(filePath);
+//        
+//        // Jatketaan käyttöliittymässä eteenpäin.
+//        choiceCompressMethod(fileText);
+//    }
 
     /**
      * Asettaa pakattavaksi tekstiksi testitekstin "TOBEORNOTTOBEORTOBEORNOT".

@@ -3,10 +3,15 @@ package hy.happoni.compremator3000.io;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -16,35 +21,59 @@ import org.junit.rules.TemporaryFolder;
  */
 public class FileIOTest {
 
+    // luodaan väliaikainen testikansio
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
-    
-    File testFile;
-    FileIO fileIO;
-    String testPath;
-    
+
+    File testReadFile;
+    File testWriteFile;
+    String testReadPath;
+    String testWritePath;
+    String testText;
+    byte[] testBytes;
+
+    // ennen testejä asetetaan sopiva testiteksti ja kirjoitetaan se testitiedostoon
     @Before
     public void setUp() throws Exception {
-        fileIO = new FileIO();
-        testFile = testFolder.newFile("testfile.txt");
-        
-        try (FileWriter file = new FileWriter(testFile.getAbsolutePath())) {
-            file.write("Mississippi on iso joki jossa isi soutaa.");
-        }   
-        testPath = testFile.getAbsolutePath();
+        testReadFile = testFolder.newFile("readfile.txt");
+        testWriteFile = testFolder.newFile("writefile.txt");
+
+        testText = "Mississippi on iso joki jossa isi soutaa.";
+        testBytes = testText.getBytes();
+
+        try (FileWriter file = new FileWriter(testReadFile.getAbsolutePath())) {
+            file.write(testText);
+        }
+        testReadPath = testReadFile.getAbsolutePath();
+        testWritePath = testWriteFile.getAbsolutePath();
     }
 
+    /**
+     * Testillä tarkistetaan, että tiedoston lukeminen toimii. Tutkitaan sekä tavulista että merkkijono.
+     */
     @Test
     public void readFileReturnsCorrectText() {
-        String correct = "Mississippi on iso joki jossa isi soutaa.";
-    
-        String test = fileIO.readFile(testPath);        
-        assertTrue(correct.equals(test));
-        assertFalse(test.contains("666"));
+        byte[] returnedBytes = FileIO.readFile(testReadPath);
+        String returnedString = new String(returnedBytes);
+
+        Assert.assertArrayEquals(returnedBytes, testBytes);
+        assertEquals(returnedString, testText);
+        assertFalse(returnedString.contains("666"));
+    }
+
+    /**
+     * Testillä tarkistetaan, että tekstin kirjoittaminen tiedostoon toimii.
+     * @throws java.io.IOException
+     */
+    @Test
+    public void writeFileWritesCorrectText() throws IOException {
+        assertTrue(FileIO.writeFile(testBytes, testWritePath, ""));
+        Assert.assertArrayEquals(FileIO.readFile(testWritePath), testBytes);
     }
     
     @After
     public void tearDown() {
-        testFile.delete();
+        testReadFile.delete();
+        testWriteFile.delete();
     }
 }

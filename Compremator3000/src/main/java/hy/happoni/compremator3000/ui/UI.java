@@ -1,4 +1,3 @@
-// Pakkaus
 package hy.happoni.compremator3000.ui;
 
 // Scannerin import käyttäjän syötteiden lukua varten.
@@ -12,11 +11,13 @@ public class UI {
     // tarvittavia muuttujia
     private Scanner reader;
     private AppLogic logic;
+    private String algoType;
 
     // konstruktori
     public UI(AppLogic logic, Scanner reader) {
         this.reader = reader;
         this.logic = logic;
+        algoType = "";
     }
 
     /**
@@ -32,11 +33,9 @@ public class UI {
 
     /**
      * Metodi tulostaa main menun ohjetekstin ja huolehtii valinnan syötöstä
-     * eteenpäin.
-     *
-     * @return choice - käyttäjän antama syöte. 1:llä ja 2:lla kutsutaan ao.
-     * metodeja, x:llä lopetetaan ohjelman suoritus ja muilla syötteillä
-     * annetaan ohjeet ja kysytään syötettä uudestaan.
+     * eteenpäin. Käyttäjän valinnoilla 1-3 kutsutaan ao. metodia ja valinnalla
+     * x katkaistaan silmukan suoritus, eli käytännössä lopetetaan ohjelman
+     * suoritus.
      */
     private void mainMenu() {
         // Main menun ohjeet. Epäkelvolla syötteellä silmukka jatkaa pyörimistään, kunnes annetaan kelvollinen syöte.
@@ -44,100 +43,91 @@ public class UI {
             System.out.println();
             System.out.println("What would you like to do?");
             System.out.println("[1] -- Insert text to demonstrate compression results.");
-            System.out.println("[2] -- Read text file and compress it.");
-            System.out.println("[3] -- Uncompress compressed text file.");
+            System.out.println("[2] -- Compress text file.");
+            System.out.println("[3] -- Uncompress compressed file.");
             System.out.println("[x] -- Exit program");
 
             System.out.print("> ");
             String choice = reader.nextLine();
 
             if (choice.equals("1")) {
-                insertOwnText();
+                compressOwnText();
             } else if (choice.equals("2")) {
-                insertOwnText();
+                compressFile();
             } else if (choice.equals("3")) {
-                
+                uncompressFile();
             } else if (choice.equals("x")) {
                 break;
             }
         }
     }
 
-//    /**
-//     * Metodin avulla luetaan tekstitiedosto ja saadaan siitä merkkijono.
-//     */
-//    private void readFile() {
-//        // Pyydetään tiedoston polku käyttäjältä.
-//        System.out.println("Please insert name of text file:");
-//        String filePath = reader.nextLine();
-//        // tähän tarvittaessa syötteen validointi!
-//
-////        String fileText = logic.readFile(filePath);
-//        
-//        // Jatketaan käyttöliittymässä eteenpäin.
-//        choiceCompressMethod(fileText);
-//    }
-
     /**
-     * Asettaa pakattavaksi tekstiksi testitekstin "TOBEORNOTTOBEORTOBEORNOT".
+     * Oman tekstin demopakkaaminen. Kutsutaan ensin apumetodia, jolla valitaan
+     * pakkaamiseen käytettävä algoritmi. Kysytään käyttäjältä syötettä ja
+     * algoritmivalinnan mukaan kutsutaan sovelluslogiikan metodia.
      */
-    private void useTestText() {
-        choiceCompressMethod("TOBEORNOTTOBEORTOBEORNOT");
+    public void compressOwnText() {
+        algoType = chooseAlgorithm();
+        System.out.println("Insert text to be compressed: ");
+        String userText = reader.nextLine();
+
+        if (algoType.equals("lz")) {
+            logic.demoLZ(userText);
+        } else if (algoType.equals("lzw")) {
+            logic.demoLZW(userText);
+        } else if (algoType.equals("lzss")) {
+            logic.demoLZSS(userText);
+        }
     }
 
     /**
-     * Käyttöliittymän osa, jossa kysytään, mitä algoritmia valitun tekstin
-     * pakkaamiseen käytetään. Tulostaa alkuun pakattavan tekstin ja antaa
-     * valita LZ77:n (1), LZW:n(2), LZSS:n(3) tai kaikki nämä (4). x:llä metodin
-     * suoritus loppuu. Metodi kutsuu valinnan mukaan sovelluslogiikan ao.
-     * metodia. Epäkelpo syöte johtaa ohjetekstin uudelleentulostukseen.
-     *
-     * @param text - Teksti, joka pakataan. Joko käyttäjän syöttämä tai valmis
-     * testiteksti.
+     * Tiedoston pakkaaminen. Valitaan ensin algoritmi ja annetaan tiedoston
+     * nimi. Kutsutaan sovelluslogiikan metodia compress.
      */
-    private void choiceCompressMethod(String text) {
-        // Valintaikkunan ohjeteksti.
+    public void compressFile() {
+        algoType = chooseAlgorithm();
+        System.out.print("Insert name of the text file to be compressed: ");
+        String fileName = reader.nextLine();
+
+        logic.compress(fileName, algoType);
+    }
+
+    /**
+     * Tiedoston purkaminen. Annetaan tiedoston nimi ja kutsutaan
+     * sovelluslogiikan metodia uncompress.
+     */
+    public void uncompressFile() {
+        System.out.print("Insert name of the file to be uncompressed: ");
+        String fileName = reader.nextLine();
+        logic.uncompress(fileName);
+    }
+
+    /**
+     * Apumetodi, jolla valitaan pakkaamiseen käytettävä algoritmi. Käytännössä
+     * muuttaa merkkijonomuuttujaa käyttäjän syötteen mukaan (1 = lz, 2 = lzw, 3
+     * = lzss).
+     *
+     * @return - käyttäjän syötteen mukaan joko "lz", "lzw" tai "lzss".
+     */
+    public String chooseAlgorithm() {
         while (true) {
-            System.out.println("Text is \"" + text + "\"");
-            System.out.println("What algorithm shall we use to compress it?");
+            System.out.println();
+            System.out.println("What algorithm shall we use?");
             System.out.println("[1] -- LZ77");
             System.out.println("[2] -- LZW");
             System.out.println("[3] -- LZSS");
-            System.out.println("[4] -- Compress with all.");
-            System.out.println("[x] -- Back to main menu.");
 
             System.out.print("> ");
             String choice = reader.nextLine();
 
-            // Valinnan mukaan kutsutaan ao. metodeja.
             if (choice.equals("1")) {
-                logic.runLZ(text);
-                break;
+                return "lz";
             } else if (choice.equals("2")) {
-                logic.runLZW(text);
-                break;
+                return "lzw";
             } else if (choice.equals("3")) {
-                logic.runLZSS(text);
-                break;
-            } else if (choice.equals("4")) {
-                logic.runAll(text);
-            } else if (choice.equals("x")) {
-                break;
+                return "lzss";
             }
         }
     }
-
-    /**
-     * Metodi, jolla asetetaan käyttäjän oma syöte pakattavaksi tekstiksi.
-     */
-    private void insertOwnText() {
-        // Pyydetään syöte käyttäjältä.
-        System.out.println("Please insert your own text to compress:");
-        String userText = reader.nextLine();
-        // tähän tarvittaessa syötteen validointi!
-
-        // Jatketaan käyttöliittymässä eteenpäin.
-        choiceCompressMethod(userText);
-    }
-
 }

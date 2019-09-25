@@ -1,10 +1,11 @@
-// pakkaus
 package hy.happoni.compremator3000.domain;
+
+import java.io.Serializable;
 
 /**
  * Luokka, joka kuvaa LZSS-algoritmin koodipalasia.
  */
-public class LZSSTuple {
+public class LZSSTuple implements Serializable {
 
     // Totuusarvo kertoo, onko palanen yksittäinen merkki (true) vai isompi pätkä (false).
     boolean singleChar;

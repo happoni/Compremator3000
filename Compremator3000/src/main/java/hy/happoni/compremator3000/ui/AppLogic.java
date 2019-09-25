@@ -1,10 +1,10 @@
-// pakkaus
 package hy.happoni.compremator3000.ui;
 
 // tällä hetkellä tarvittavat importit
 import hy.happoni.compremator3000.domain.*;
 import hy.happoni.compremator3000.io.FileIO;
-import java.util.List;
+import java.util.ArrayList;
+import org.apache.commons.lang3.SerializationUtils;
 
 /**
  * Yleisestä sovelluslogiikasta huolehtiva luokka.
@@ -12,10 +12,10 @@ import java.util.List;
 public class AppLogic {
 
     // tarvittavat muuttujat, käytännössä algoritmit suorittavat luokat
-    private FileIO fileIo;
-    private LZW lzw;
-    private LZ lz;
-    private LZSS lzss;
+    private final FileIO fileIo;
+    private final LZW lzw;
+    private final LZ lz;
+    private final LZSS lzss;
 
     // konstruktori
     public AppLogic() {
@@ -25,71 +25,105 @@ public class AppLogic {
         this.lzss = new LZSS();
     }
 
-//    /**
-//     * Luetaan fileIO:n avulla annetun polun päässä oleva tekstitiedosto merkkijonoksi.
-//     * 
-//     * @param filePath - tiedoston polku 
-//     * @return  - tiedoston teksti merkkijonona
-//     */
-//    public String readFile(String filePath) {                
-//        return fileIo.readFile(filePath);
-//    }
-    
     /**
-     * LZW-algoritmin ajava metodi. Tällä hetkellä pakkaa ja purkaa annetun tekstin ja tulostaa "pakkauskoodin", ja tekstin purkamisen jälkeen.
-     * 
-     * @param text - Pakattava teksti.
+     * Metodi, joka demonstroi LZ-algoritmin toimintaa. Kutsuu lz-luokan metodia
+     * compress, ja tulostaa pakatun "koodin".
+     *
+     * @param text - käyttäjän syöttämä, pakattava teksti
      */
-    public void runLZW(String text) {
+    public void demoLZ(String text) {
         // pakataan annettu teksti ja tulostetaan "pakkauskoodi"
-        List<Integer> compressed = lzw.compress(text);
-        System.out.println(compressed);
-        
-        // puretaan äsken pakattu teksti ja tulostetaan se
-        String decompressed = lzw.decompress(compressed);
-        System.out.println(decompressed);
+        System.out.println("Text to be compressed with LZ77: " + text);
+        byte[] compressed = lz.compress(text);
+        ArrayList<Tuple> demo = SerializationUtils.deserialize(compressed);
+        System.out.println("Compressed code: " + demo);
     }
 
     /**
-     * LZ77-algoritmin ajava metodi. Tällä hetkellä pakkaa ja purkaa annetun tekstin ja tulostaa "pakkauskoodin", ja tekstin purkamisen jälkeen.
-     * 
-     * @param text - Pakattava teksti.
+     * Metodi, joka demonstroi LZW-algoritmin toimintaa. Kutsuu lzw-luokan
+     * metodia compress, ja tulostaa pakatun "koodin".
+     *
+     * @param text - käyttäjän syöttämä, pakattava teksti
      */
-    public void runLZ(String text) {
+    public void demoLZW(String text) {
         // pakataan annettu teksti ja tulostetaan "pakkauskoodi"
-        List<Tuple> compressed = lz.compress(text);
-        System.out.println(compressed);
-        
-        // puretaan äsken pakattu teksti ja tulostetaan se
-        String decompressed = lz.decompress(compressed);
-        System.out.println(decompressed);
+        System.out.println("Text to be compressed with LZW: " + text);
+        byte[] compressed = lzw.compress(text);
+        ArrayList<Integer> demo = SerializationUtils.deserialize(compressed);
+        System.out.println("Compressed code: " + demo);
     }
 
     /**
-     * LZSS-algoritmin ajava metodi. Tällä hetkellä pakkaa ja purkaa annetun tekstin ja tulostaa "pakkauskoodin", ja tekstin purkamisen jälkeen.
-     * 
-     * @param text - Pakattava teksti.
+     * Metodi, joka demonstroi LZSS-algoritmin toimintaa. Kutsuu lzss-luokan
+     * metodia compress, ja tulostaa pakatun "koodin".
+     *
+     * @param text - käyttäjän syöttämä, pakattava teksti
      */
-    public void runLZSS(String text) {
+    public void demoLZSS(String text) {
         // pakataan annettu teksti ja tulostetaan "pakkauskoodi"
-        List<LZSSTuple> compressed = lzss.compress(text);
-        System.out.println(compressed);
-        
-        // puretaan äsken pakattu teksti ja tulostetaan se
-        String decompressed = lzss.decompress(compressed);
-        System.out.println(decompressed);
+        System.out.println("Text to be compressed with LZSS: " + text);
+        byte[] compressed = lzss.compress(text);
+        ArrayList<LZSSTuple> demo = SerializationUtils.deserialize(compressed);
+        System.out.println("Compressed code: " + demo);
     }
 
     /**
-     * Metodi, joka ajaa kaikki kolme algoritmia (LZ77, LZW ja LZSS). Tällä hetkellä pakkaa ja purkaa annetun tekstin ja tulostaa "pakkauskoodin"
-     * , ja tekstin purkamisen jälkeen. Käytännössä kutsuu jokaista algoritmin ajavaa metodia.
-     * 
-     * @param text - Pakattava teksti
+     * Tiedoston pakkaamisesta huolehtiva metodi. Pakkaa syötetyn tiedoston
+     * annetulla algoritmilla. Jos tiedostoa ei ole (tai se on tyhjä), ei pakkaa
+     * mitään, vaan tulostaa virheviestin. Kutsuu ao. algoritmin suorittavan
+     * luokan metodia ja fileIO-luokan metodeja readFile ja writeCompressedFile.
+     *
+     * @param fileName - pakattavan tiedoston nimi
+     * @param algoType - algoritmi, jolla pakkaus suoritetaan
      */
-    public void runAll(String text) {
-        runLZ(text);
-        runLZW(text);
-        runLZSS(text);
+    public void compress(String fileName, String algoType) {
+        String data = fileIo.readFile(fileName);
+        boolean success = false;
+
+        if (data != "") {
+            if (algoType.equals("lz")) {
+                success = fileIo.writeCompressedFile(lz.compress(data), fileName, ".lz");
+            } else if (algoType.equals("lzw")) {
+                success = fileIo.writeCompressedFile(lzw.compress(data), fileName, ".lzw");
+            } else if (algoType.equals("lzss")) {
+                success = fileIo.writeCompressedFile(lzss.compress(data), fileName, ".lzss");
+            }
+        }
+        if (success) {
+            System.out.println("File compressed succesfully: " + fileName + "." + algoType);
+        } else {
+            System.out.println("Compression failed.");
+        }
     }
-    
+
+    /**
+     * Pakatun tiedoston purkamisesta huolehtiva metodi. Lukee ensin tiedoston
+     * fileIO:n avulla ja katsoo tiedoston päätteen perusteella, minkä
+     * algoritmin suorittavan luokan metodilla tiedosto puretaan. Kirjoittaa
+     * sitten puretun tekstin tiedostoksi ilman pakkauspäätettä. Jos purkaminen
+     * ei onnistu, antaa virheviestin.
+     *
+     * @param fileName - purettavan tiedoston nimi
+     */
+    public void uncompress(String fileName) {
+
+        byte[] data = fileIo.readCompressedFile(fileName);
+        boolean success = false;
+
+        if (data != null) {
+            if (fileName.contains(".lz")) {
+                success = fileIo.writeFile((lz.decompress(data)), (fileName.substring(0, fileName.length() - 3)));
+            } else if (fileName.contains(".lzw")) {
+                success = fileIo.writeFile((lzw.decompress(data)), (fileName.substring(0, fileName.length() - 4)));
+            } else if (fileName.contains(".lzss")) {
+                success = fileIo.writeFile((lzss.decompress(data)), (fileName.substring(0, fileName.length() - 5)));
+            }
+        }
+        if (success) {
+            System.out.println("File uncompressed succesfully.");
+        } else {
+            System.out.println("Uncompression failed.");
+        }
+    }
+
 }

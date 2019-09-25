@@ -1,10 +1,11 @@
-// pakkaus
 package hy.happoni.compremator3000.domain;
+
+import java.io.Serializable;
 
 /**
  * Apuluokka, jota käytetään LZ77-algoritmissa.
  */
-public class Tuple {
+public class Tuple implements Serializable {
 
     // Offset pitää kirjaa sen pisimmän osuman sijainnista, joka sijaitsee
     // sanakirjassa. StringLength on pisimmän osuman pituus. NextChar on

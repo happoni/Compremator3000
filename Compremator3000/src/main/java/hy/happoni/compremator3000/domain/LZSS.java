@@ -1,10 +1,9 @@
-// pakkaus
 package hy.happoni.compremator3000.domain;
 
 // tuodaan tässä vaiheessa tarvittavia importteja
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import org.apache.commons.lang3.SerializationUtils;
 
 /**
  * Luokka, joka huolehtii Lempel-Ziv-Storer-Szymanski -algoritmin (LZSS)
@@ -92,14 +91,13 @@ public class LZSS {
     }
 
     /**
-     * Metodi, joka pakkaa annetun merkkijonon tupleiksi, eli ns. pakatun koodin
-     * palasiksi.
+     * Metodi, joka pakkaa annetun merkkijonon tupleiksi, eli "pakkauskoodiksi".
      *
      * @param input - merkkijono, joka halutaan pakata.
-     * @return compressedData - lista muuttujia "tuple", jotka kertovat pakatun
-     * merkkijonon koodipalat.
+     * @return compressedData - byte arrayna lista tupleja, jotka kertovat
+     * pakatun merkkijonon koodipalat.
      */
-    public List<LZSSTuple> compress(String input) {
+    public byte[] compress(String input) {
 
         // Käydään merkkijono läpi.
         charCount = 0;
@@ -148,20 +146,20 @@ public class LZSS {
                 compressedData.add(new LZSSTuple(true, nextChar));
                 charCount++;
             }
-            // debuggausta varten
-            // System.out.println(charCount);
         }
-        return compressedData;
+        return SerializationUtils.serialize(compressedData);
     }
 
     /**
-     * Metodi purkaa syötteenä annetun pakatun tiedoston, eli käytännössä listan
-     * muuttujia tuple.
+     * Metodi purkaa syötteenä annetun pakatun tiedoston, eli käytännössä (byte
+     * arrayna) listan muuttujia tuple.
      *
-     * @param compressed -
+     * @param compressedData - byte arrayna lista tupleja
      * @return reconData - toString()-metodin avulla muodostettu merkkijono.
      */
-    public String decompress(List<LZSSTuple> compressed) {
+    public String decompress(byte[] compressedData) {
+        ArrayList<LZSSTuple> compressed = SerializationUtils.deserialize(compressedData);
+
         // Luodaan dekoodattu merkkijono tähän talteen.
         StringBuilder reconData = new StringBuilder();
         // Haetaan tietoja tuple-listasta.

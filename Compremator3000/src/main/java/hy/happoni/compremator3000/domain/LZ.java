@@ -1,15 +1,13 @@
-// Pakkaus.
 package hy.happoni.compremator3000.domain;
 
 // Tuodaan tarvittavia importeja, poistetaan myöhemmässä vaiheessa tarpeettomiksi käyneet.
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.lang3.SerializationUtils;
 
 /**
- * Luokka, joka huolehtii Lempel-Ziv -algoritmin (LZ77) toteutuksesta. Luokan
- * toteutuksessa on otettu mallia lähteissä mainitussa artikkelista
- * "Understanding the Lempel-Ziv Data Compression Algorithm in Java".
+ * Luokka, joka huolehtii Lempel-Ziv -algoritmin (LZ77) toteutuksesta.
  */
 public class LZ {
 
@@ -46,24 +44,27 @@ public class LZ {
 
     /**
      * Metodilla asetetaan LZ77-algoritmin etsintäikkunan alkupiste.
-     * 
+     *
      * @param charCount - tieto siitä, kuinka mones merkki on käsittelyssä
      * @param dictionaryLength - tieto sanakirjan pituudesta
-     * @return charCount - dictionaryLength, jos se ei ole negatiivinen, muutoin palautetaan nolla
-     */  
-    public int setSearchWindowStart(int charCount, int dictionaryLength) {                 
-         if (charCount - dictionaryLength >= 0) {
-             return charCount - dictionaryLength;
-         }
-         return 0;       
+     * @return charCount - dictionaryLength, jos se ei ole negatiivinen, muutoin
+     * palautetaan nolla
+     */
+    public int setSearchWindowStart(int charCount, int dictionaryLength) {
+        if (charCount - dictionaryLength >= 0) {
+            return charCount - dictionaryLength;
+        }
+        return 0;
     }
-    
+
     /**
      * Metodilla asetetaan LZ77-algoritmin bufferin loppupiste.
+     *
      * @param charCount - tieto siitä, mones merkki on käsittelyssä
      * @param bufferLength - tieto bufferin pituudesta
      * @param inputLength - tieto pakattavana olevan syötteen pituudesta
-     * @return charCount + bufferLength, jos ne yhdessä ovat lyhyempi kuin syötteen pituus, muutoin syötteen pituus
+     * @return charCount + bufferLength, jos ne yhdessä ovat lyhyempi kuin
+     * syötteen pituus, muutoin syötteen pituus
      */
     public int setBufferEnd(int charCount, int bufferLength, int inputLength) {
         if (charCount + bufferLength < inputLength) {
@@ -71,13 +72,16 @@ public class LZ {
         }
         return inputLength;
     }
-    
+
     /**
      * Metodilla asetetaan ikkuna, josta etsitään osumia.
+     *
      * @param input - pakattava merkkijono
      * @param charCount - tieto siitä, mones merkki on käsittelyssä
      * @param searchWindowStart - tieto etsintäikkunan alkupisteestä
-     * @return jos charCount on nolla, palautetaan tyhjä merkkijono, muulloin se osamerkkijono, joka on searchWindowStartin ja charCountin välissä syötteessä
+     * @return jos charCount on nolla, palautetaan tyhjä merkkijono, muulloin se
+     * osamerkkijono, joka on searchWindowStartin ja charCountin välissä
+     * syötteessä
      */
     public String setSearchSubstring(String input, int charCount, int searchWindowStart) {
         if (charCount == 0) {
@@ -85,15 +89,17 @@ public class LZ {
         }
         return input.substring(searchWindowStart, charCount);
     }
-    
+
     /**
      * Metodi, joka pakkaa annetun merkkijonon tupleiksi, eli ns. pakatun koodin
      * palasiksi.
+     *
      * @param input - merkkijono, joka halutaan pakata.
-     * @return compressedData - lista muuttujia "tuple", jotka kertovat pakatun merkkijonon koodipalat.
+     * @return compressedData - byte array listasta tupleja, jotka kertovat
+     * "pakkauskoodin"
      */
-    public List<Tuple> compress(String input) {
-        
+    public byte[] compress(String input) {
+
         // Käydään merkkijono läpi.
         charCount = 0;
         while (charCount < input.length()) {
@@ -126,7 +132,7 @@ public class LZ {
                 matchLocation = searchSubstring.indexOf(input.substring(charCount, charCount + matchLength));
                 // Kasvatetaan merkkilaskuria.
                 charCount += matchLength;
-                
+
                 // Laitetaan koodipala tietoon tupleen.
                 int offset = (charCount < (dictionaryLength + matchLength)) ? charCount - matchLocation - matchLength : dictionaryLength - matchLocation;
                 String nextChar = input.substring(charCount, charCount + 1);
@@ -138,16 +144,19 @@ public class LZ {
             // Kasvatetaan merkkilaskuria.
             charCount++;
         }
-        return compressedData;
+        return SerializationUtils.serialize(compressedData);
     }
 
     /**
-     * Metodi purkaa syötteenä annetun pakatun tiedoston, eli käytännössä listan muuttujia tuple.
+     * Metodi purkaa syötteenä annetun pakatun tiedoston, eli käytännössä listan
+     * muuttujia tuple.
      *
-     * @param compressed - 
+     * @param compressedData - byte array listasta tupleja
      * @return reconData - toString()-metodin avulla muodostettu merkkijono.
      */
-    public String decompress(List<Tuple> compressed) {
+    public String decompress(byte[] compressedData) {
+        List<Tuple> compressed = SerializationUtils.deserialize(compressedData);
+
         // Luodaan dekoodattu merkkijono tähän talteen.
         StringBuilder reconData = new StringBuilder();
         // Haetaan tietoja tuple-listasta.

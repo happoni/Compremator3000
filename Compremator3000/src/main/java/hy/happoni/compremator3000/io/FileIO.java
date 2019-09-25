@@ -2,12 +2,8 @@
 package hy.happoni.compremator3000.io;
 
 // tarvittavat importit
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -16,44 +12,73 @@ import java.nio.file.Paths;
 public class FileIO {
 
     /**
-     * Metodi, jolla luetaan tekstitiedosto tavulistaksi.
+     * Metodi, jolla luetaan pakattava tekstitiedosto.
      *
-     * @param filePath - tekstitiedoston polku/nimi
-     * @return - tekstitiedostosta haettu tavulista
+     * @param filePath - tekstitiedoston nimi
+     * @return - tekstitiedosto merkkijonona
      */
-    public static byte[] readFile(String filePath) {
-        byte[] input = null;
-        Path path = Paths.get(filePath);
-
+    public String readFile(String filePath) {
+        String input = "";
         try {
-            input = Files.readAllBytes(path);
+            input = new String(Files.readAllBytes(Paths.get(filePath)));
         } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Something went wrong, maybe file is not found.");
         }
         return input;
     }
 
     /**
-     * Metodi kirjoittaa annetut tavut tiedostoon. Voidaan käyttää sekä pakatun tekstin kirjoittamiseen tiedostoksi että
-     * puretun tiedoston kirjoittamiseksi tekstitiedostoksi. Pakatessa metodi lisää sen nimen perään päätteen sen algoritmin
-     * mukaan, jolla se on pakattu (.lz, .lzw, .lzss).
-     * 
-     * @param encoded - tavulista, joka sisältää pakatun tiedoston "koodin"
-     * @param filepath - tiedoston polku/nimi
-     * @param algoType - algoritmin, jolla pakkaus tehty, tiedoston pääte
-     * @return - palauttaa true, jos kirjoitus onnistui, muulloin false
-     * @throws java.io.IOException
+     * Pakatun tiedoston lukeminen. Lukee tektitiedoston byte arrayksi. Heittää
+     * IOExceptionin, jos lukeminen ei onnistu.
+     *
+     * @param filePath - tiedoston nimi
+     * @return - tekstitiedosto byte arrayna, jos lukeminen ei onnistu,
+     * palauttaa null
      */
-    public static boolean writeFile(byte[] encoded, String filepath, String algoType) throws IOException {
-        File file = new File(filepath + algoType);
+    public byte[] readCompressedFile(String filePath) {
+        byte[] input = null;
 
         try {
-            FileOutputStream os = new FileOutputStream(file);
-            os.write(encoded);
-            System.out.println("File wrote succesfully.");
-            os.close();
+            input = Files.readAllBytes(Paths.get(filePath));
+        } catch (IOException e) {
+            System.out.println("Something went wrong, maybe file is not found.");
+        }
+        return input;
+    }
+
+    /**
+     * Pakatun tiedoston kirjoittaminen tiedostoon. Heittää IOExceptionin, jos
+     * kirjoittaminen ei onnistu.
+     *
+     * @param compressedData - byte arrayna pakattu tiedosto
+     * @param filePath - tiedoston nimi
+     * @param algoType - algoritmista riippuva pääte pakattavan tiedoston nimeen
+     * @return - true, jos kirjoittaminen onnistui, muuten false
+     */
+    public boolean writeCompressedFile(byte[] compressedData, String filePath, String algoType) {
+        try {
+            Files.write(Paths.get(filePath + algoType), compressedData);
             return true;
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+            System.out.println("Something went wrong.");
+        }
+        return false;
+    }
+
+    /**
+     * Puretun tiedoston kirjoittaminen tiedostoon. Kirjoittaa merkkijonon
+     * puretun tiedoston mukaan nimettyyn tiedostoon. Heittää IOExceptionin, jos
+     * kirjoittaminen ei onnistu.
+     *
+     * @param uncompressed - merkkijonona purettu tiedosto
+     * @param filepath - tiedoston nimi
+     * @return - true, jos kirjoittaminen onnistuu, muuten false
+     */
+    public boolean writeFile(String uncompressed, String filepath) {
+        try {
+            Files.write(Paths.get(filepath), uncompressed.getBytes());
+            return true;
+        } catch (IOException e) {
             System.out.println("Something has gone wrong.");
         }
         return false;

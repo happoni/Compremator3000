@@ -1,19 +1,18 @@
-// pakkaus
 package hy.happoni.compremator3000.domain;
 
 // tuodaan kaikki importit nyt
 import java.util.*;
+import org.apache.commons.lang3.SerializationUtils;
 
 /**
- * Luokka, joka huolehtii Lempel-Ziv-Welch -algoritmin toteutuksesta. Tällä
- * hetkellä kopioitu Rosettacodesta, jotta saadaan jonkinlainen toiminnallisuus
- * aluille.
+ * Luokka, joka huolehtii Lempel-Ziv-Welch -algoritmin toteutuksesta.
  */
 public class LZW {
 
     /**
      * Metodi, joka alustaa sanakirjan LZW-algoritmin pakkausmetodia varten,
-     * @return 
+     *
+     * @return dictionary - algoritmin sanakirja
      */
     public Map<String, Integer> initDictionary() {
         Map<String, Integer> dictionary = new HashMap<>();
@@ -27,16 +26,16 @@ public class LZW {
      * Metodi saa merkkijonon, jonka se pakkaa algoritmin avulla koodatuksi
      * listaksi.
      *
-     * @param uncompressed
-     * @return
+     * @param uncompressed - merkkijono, joka pakataan
+     * @return - byte array listasta, joka sisältää algoritmin "pakkauskoodin"
      */
-    public List<Integer> compress(String uncompressed) {
+    public byte[] compress(String uncompressed) {
         // Rakennetaan sanakirja.
         int dictSize = 256;
         Map<String, Integer> dictionary = initDictionary();
 
         String w = "";
-        List<Integer> result = new ArrayList<>();
+        ArrayList<Integer> result = new ArrayList<>();
         for (char c : uncompressed.toCharArray()) {
             String wc = w + c;
             if (dictionary.containsKey(wc)) {
@@ -53,16 +52,19 @@ public class LZW {
         if (!w.equals("")) {
             result.add(dictionary.get(w));
         }
-        return result;
+        return SerializationUtils.serialize(result);
     }
 
     /**
-     * Metodi saa koodatun listan, jonka se purkaa merkkijonoksi.
+     * Metodi saa koodatun listan (byte arrayna), jonka se purkaa merkkijonoksi.
      *
-     * @param compressed
-     * @return
+     * @param compressedData - byte arrayna lista kokonaislukuja, jotka kertovat
+     * "pakkauskoodin"
+     * @return - merkkijonona purettu teksti
      */
-    public String decompress(List<Integer> compressed) {
+    public String decompress(byte[] compressedData) {
+        ArrayList<Integer> compressed = SerializationUtils.deserialize(compressedData);
+
         // Rakennetaan sanakirja.
         int dictSize = 256;
         Map<Integer, String> dictionary = new HashMap<>();

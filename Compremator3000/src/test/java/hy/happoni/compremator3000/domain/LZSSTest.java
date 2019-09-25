@@ -1,7 +1,9 @@
 // pakkaus
 package hy.happoni.compremator3000.domain;
 
+import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.SerializationUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,7 +20,7 @@ public class LZSSTest {
     LZSSTuple tupleIsNotChar;
     LZSS lzss1;
     LZSS lzss2;
-    List<LZSSTuple> codedToBe;
+    ArrayList<LZSSTuple> codedToBe;
     
     public LZSSTest() {
     }
@@ -75,7 +77,8 @@ public class LZSSTest {
         LZSSTuple testiTuple3;
         LZSSTuple testiTuple4;
         
-        List<LZSSTuple> testiTuplet = lzss2.compress("MISSISSIPPI");
+        byte[] tested = lzss2.compress("MISSISSIPPI");
+        ArrayList<LZSSTuple> testiTuplet = SerializationUtils.deserialize(tested);
         
         testiTuple1 = testiTuplet.get(0);
         testiTuple2 = testiTuplet.get(4);
@@ -94,8 +97,8 @@ public class LZSSTest {
 
     @Test
     public void decompressWorksCorrectly() {
-        codedToBe = lzss2.compress("TOBEORNOTTOBEORTOBEORNOT");
-        assertEquals(lzss2.decompress(codedToBe), "TOBEORNOTTOBEORTOBEORNOT");
+        byte[] tested = lzss2.compress("TOBEORNOTTOBEORTOBEORNOT");
+        assertEquals(lzss2.decompress(tested), "TOBEORNOTTOBEORTOBEORNOT");
     }
 
 }

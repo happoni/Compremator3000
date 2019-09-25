@@ -2,7 +2,9 @@
 package hy.happoni.compremator3000.domain;
 
 // tarvittavat importit testeihin
+import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -14,7 +16,7 @@ public class LZTest {
 
     LZ lz1;
     LZ lz2;
-    List<Tuple> codedToBe;
+    ArrayList<Tuple> codedToBe;
 
     public LZTest() {
     }
@@ -51,13 +53,11 @@ public class LZTest {
 
     @Test
     public void compressWorksCorrectly() {
-        Tuple testiTuple1;
-        Tuple testiTuple2;
-        Tuple testiTuple3;
-        List<Tuple> testiTuplet = lz2.compress("MISSISSIPPI");
-        testiTuple1 = testiTuplet.get(0);
-        testiTuple2 = testiTuplet.get(1);
-        testiTuple3 = new Tuple(99, 5, "L");
+        byte[] testiTuplet = lz2.compress("MISSISSIPPI");
+        ArrayList<Tuple> testiTupleLista = SerializationUtils.deserialize(testiTuplet);
+        Tuple testiTuple1 = testiTupleLista.get(0);
+        Tuple testiTuple2 = testiTupleLista.get(1);        
+        Tuple testiTuple3 = new Tuple(99, 5, "L");
 
         assertEquals(testiTuple1.offset, 0);
         assertEquals(testiTuple1.stringLength, 0);
@@ -67,8 +67,10 @@ public class LZTest {
 
     @Test
     public void decompressWorksCorrectly() {
-        codedToBe = lz2.compress("TOBEORNOTTOBEORTOBEORNOT");
-        assertEquals(lz2.decompress(codedToBe), "TOBEORNOTTOBEORTOBEORNOT");
+        byte[] tested = lz2.compress("TOBEORNOTTOBEORTOBEORNOT");
+        codedToBe = SerializationUtils.deserialize(tested);
+         
+         assertEquals(lz2.decompress(tested), "TOBEORNOTTOBEORTOBEORNOT");
     }
 
 }

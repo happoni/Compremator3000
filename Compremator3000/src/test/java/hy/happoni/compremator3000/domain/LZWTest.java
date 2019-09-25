@@ -3,6 +3,7 @@ package hy.happoni.compremator3000.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -33,16 +34,17 @@ public class LZWTest {
 
     @Test
     public void compressWorksCorrectly() {
-        List<Integer> testCompress = lzw1.compress("TOBEORNOTTOBE");
-        int test3 = testCompress.get(0);
-        int test4 = testCompress.get(1);
+        byte[] testCompress = lzw1.compress("TOBEORNOTTOBE");
+        ArrayList<Integer> testList = SerializationUtils.deserialize(testCompress);
+        int test3 = testList.get(0);
+        int test4 = testList.get(1);
         assertEquals(test3, 84);
         assertFalse(test4 == 1);
     }
 
     @Test
     public void decompressWorksCorrectly() {
-        List<Integer> testDecompress = new ArrayList<>();
+        ArrayList<Integer> testDecompress = new ArrayList<>();
         testDecompress.add(72);
         testDecompress.add(73);
         testDecompress.add(83);
@@ -51,7 +53,7 @@ public class LZWTest {
         testDecompress.add(83);
         testDecompress.add(196);
 
-        String testDecompressed = lzw1.decompress(testDecompress);
+        String testDecompressed = lzw1.decompress(SerializationUtils.serialize(testDecompress));
         assertEquals(testDecompressed, "HISSISSÄ");
     }
 

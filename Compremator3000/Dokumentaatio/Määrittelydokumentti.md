@@ -9,7 +9,6 @@ Projektissa käytetään Lempel-Zivin algoritmin eri muunnelmia. Algoritmit, jot
 - Lempel-Ziv 1977 (LZ77), ns. alkuperäinen Abraham Lempelin ja Jacob Zivin vuonna 1977 kehittämä pakkausalgoritmi.
 - Lempel-Ziv-Welch (LZW), Lempelin ja Zivin yhdessä Terry Welchin kanssa vuonna 1984 julkaisema, LZ77:n paranneltu implementaatio.
 - Lempel-Ziv-Storer-Szymanski (LZSS), James Storerin ja Thomas Szymanskin vuonna 1982 luoma pakkausalgoritmi, joka perustuu LZ77:aan.
-- Lempel-Ziv-Markov chain algorithm (LZMA), Igor Pavlovin 1990-luvun lopulta asti kehittämä LZ77:aan perustuva algoritmi.
 
 *Projektissa käytettäviä tietorakenteja tullaan päivittämään...*
 
@@ -22,7 +21,7 @@ LZ-algoritmit on valittu, koska ne ovat laajalti käytössä tiedostojen pakkaam
 ## Syötteet ja niiden käyttö
 
 Ohjelmalle on tarkoitus pystyä syöttämään minkälainen tiedosto tahansa tietokoneen muistista (jonkinlainen kokorajoitus on mahdollinen). Liikkeelle lähdetään
-todennäköisesti tekstitiedostoista. Ohjelma pakkaa syötetyn tiedoston pienempään tilaan kaikilla algoritmeilla ja tarjoaa tietoa algoritmien pakkaustehokkuudesta ja 
+todennäköisesti tekstitiedostoista. Ohjelma pakkaa syötetyn tiedoston pienempään tilaan valitulla algoritmilla ja tarjoaa tietoa algoritmin pakkaustehokkuudesta ja 
 -nopeudesta.
 
 ## Aika- ja tilavaativuustavoitteet
@@ -37,8 +36,6 @@ algoritmit pystyvät pakkaamaan yhden megatavun kokoisen tiedoston yhdessä seku
 [Lempel-Ziv-Welch.](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch) (n.d.) Wikipedia. Haettu 6.9.2019.
 
 [Lempel-Ziv-Storer-Szymanski](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Storer%E2%80%93Szymanski) (n.d.) Wikipedia. Haettu 6.9.2019.
-
-[Lempel-Ziv-Markov chain algorithm](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov_chain_algorithm) (n.d.) Wikipedia. Haettu 6.9.2019.
 
 [LZW Compression technique](https://www.geeksforgeeks.org/lzw-lempel-ziv-welch-compression-technique/) Saikia A. R. Geeks for Geeks. Haettu 10.9.2019.
 

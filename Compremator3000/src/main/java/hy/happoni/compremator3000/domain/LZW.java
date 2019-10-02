@@ -9,6 +9,8 @@ import org.apache.commons.lang3.SerializationUtils;
  */
 public class LZW {
 
+
+    
     /**
      * Metodi, joka alustaa sanakirjan LZW-algoritmin pakkausmetodia varten,
      *
@@ -18,10 +20,44 @@ public class LZW {
         Map<String, Integer> dictionary = new HashMap<>();
         for (int i = 0; i < 256; i++) {
             dictionary.put("" + (char) i, i);
+            //System.out.println((char) i);
         }
+        
         return dictionary;
     }
 
+    /**
+     * Metodi, joka pakkaa tiedoston käyttäen LZW-algoritmia. Tietorakenteet toteutettu pian itse...
+     * @param input
+     * @return 
+     */
+    public byte[] encode(byte[] input) {
+        // toteuttava itse
+        ArrayList<Integer> output = new ArrayList<>();
+        
+        LZWDictionary dictionary = new LZWDictionary(65536);
+        int emptyPrefix = -1;
+        int index = emptyPrefix;
+        
+        for (int i = 0; i < input.length; i++) {            
+            LZWElement element = new LZWElement(index, input[i]);
+            
+            if (dictionary.contains(element)) {
+                index = dictionary.getIndexOfElement(element);
+            } else {
+                dictionary.addElement(element);
+                output.add(index);
+                index = input[i];
+            }            
+        }
+        output.add(index);
+        
+        // toteutettava itse
+        return SerializationUtils.serialize(output);
+    }
+    
+    
+    
     /**
      * Metodi saa merkkijonon, jonka se pakkaa algoritmin avulla koodatuksi
      * listaksi.

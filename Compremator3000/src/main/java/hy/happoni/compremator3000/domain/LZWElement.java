@@ -7,44 +7,55 @@ package hy.happoni.compremator3000.domain;
 public class LZWElement {
     
     private final int prefixIndex;
-    private final byte value;
-    private int first;
-    private int left;
-    private int right;
+    private final byte postByte;
+    private LZWElement parent;
+    private LZWElement left;
+    private LZWElement right;
     
     public LZWElement(int prefixIndex, byte value) {
         this.prefixIndex = prefixIndex;
-        this.value = value;
+        this.postByte = value;
+        this.parent = null;
+        this.left = null;
+        this.right = null;
+    }
+            
+    public void setParent(LZWElement parent) {
+        this.parent = parent;
     }
     
-    public LZWElement(int prefixIndex, byte value, int first, int left, int right) {
-        this.prefixIndex = prefixIndex;
-        this.value = value;
-        this.first = first;
+    public void setLeft(LZWElement left) {
         this.left = left;
+    }
+    
+    public void setRight(LZWElement right) {
         this.right = right;
     }
-    
+        
     public int getPrefixIndex() {
         return prefixIndex;
     }
     
-    public byte getValue() {
-        return value;
+    public byte getPostByte() {
+        return postByte;
     }
 
-    public int getFirst() {
-        return first;
+    public LZWElement getParent() {
+        return parent;
     }
 
-    public int getLeft() {
+    public LZWElement getLeft() {
         return left;
     }
 
-    public int getRight() {
+    public LZWElement getRight() {
         return right;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Alkuosa löytyy tästä indeksistä: " + prefixIndex + "; tavun arvo: " + postByte;
+    }
 
     
 }

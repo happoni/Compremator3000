@@ -14,8 +14,6 @@ public class Main {
         UI ui = new UI(logic, reader);
 
         ui.startApp();
-    
-    
-    
+
     }
 }

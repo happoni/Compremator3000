@@ -17,12 +17,26 @@ public class FileIO {
      * @param filePath - tekstitiedoston nimi
      * @return - tekstitiedosto merkkijonona
      */
-    public String readFile(String filePath) {
-        String input = "";
+    public byte[] readFile(String filePath) {
+        byte[] input = null;
         try {
-            input = new String(Files.readAllBytes(Paths.get(filePath)));
+            input = Files.readAllBytes(Paths.get(filePath));
         } catch (IOException e) {
             System.out.println("Something went wrong, maybe file is not found.");
+        }
+        return input;
+    }
+
+    public char[] readFileToCharArray(String filePath) {        
+        String s = "";
+        try {
+            s = new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            System.out.println("Something went wrong, maybe file is not found.");
+        }
+        char[] input = new char[s.length()];
+        for (int i = 0; i < input.length; i++) {
+            input[i] = s.charAt(i);
         }
         return input;
     }

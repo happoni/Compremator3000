@@ -92,7 +92,7 @@ public class UI {
         while (true) {
             System.out.println();
             System.out.println("What algorithm shall we use?");
-            //System.out.println("[1] -- LZ77");
+            System.out.println("[1] -- LZ77");
             System.out.println("[2] -- LZW");
             //System.out.println("[3] -- LZSS");
 

@@ -9,10 +9,10 @@ import org.apache.commons.lang3.SerializationUtils;
 /**
  * Luokka, joka huolehtii Lempel-Ziv -algoritmin (LZ77) toteutuksesta.
  */
-public class LZ {
+public class LZ77 {
 
     // Lista, johon tuplet säilötään.
-    ArrayList<Tuple> compressedData;
+    LZList compressedData;
 
     // Etsintäikkuna
     String searchSubstring;
@@ -20,7 +20,7 @@ public class LZ {
     // Apumuuttujia, joita tarvitaan algoritmin toiminnassa.
     int matchLength;
     int matchLocation;
-    int byteCount;
+    int charCount;
     int searchWindowStart;
     int bufferEnd;
 
@@ -29,15 +29,15 @@ public class LZ {
     int bufferLength;
 
     // Konstruktori, jolla voidaan asettaa halutut arvot sanakirjan ja bufferin pituudelle.
-    public LZ(int dictionaryLength, int bufferLength) {
-        this.compressedData = new ArrayList<>();
+    public LZ77(int dictionaryLength, int bufferLength) {
+        this.compressedData = new LZList();
         this.dictionaryLength = dictionaryLength;
         this.bufferLength = bufferLength;
     }
 
     // Parametriton konstruktori.
-    public LZ() {
-        this.compressedData = new ArrayList<>();
+    public LZ77() {
+        this.compressedData = new LZList();
         this.dictionaryLength = 31;
         this.bufferLength = 7;
     }
@@ -77,17 +77,17 @@ public class LZ {
      * Metodilla asetetaan ikkuna, josta etsitään osumia.
      *
      * @param input - pakattava merkkijono
-     * @param byteCount - tieto siitä, mones merkki on käsittelyssä
+     * @param charCount - tieto siitä, mones merkki on käsittelyssä
      * @param searchWindowStart - tieto etsintäikkunan alkupisteestä
      * @return jos charCount on nolla, palautetaan tyhjä merkkijono, muulloin se
      * osamerkkijono, joka on searchWindowStartin ja charCountin välissä
      * syötteessä
      */
-    public String setSearchSubstring(String input, int byteCount, int searchWindowStart) {
-        if (byteCount == 0) {
-            return null;
+    public String setSearchSubstring(String input, int charCount, int searchWindowStart) {
+        if (charCount == 0) {
+            return "";
         }
-        String searchSubbytes = input.substring(byteCount - searchWindowStart);
+        String searchSubbytes = input.substring(charCount - searchWindowStart);
         return searchSubbytes;
     }
 
@@ -99,30 +99,30 @@ public class LZ {
      * @return compressedData - byte array listasta tupleja, jotka kertovat
      * "pakkauskoodin"
      */
-    public byte[] compress(byte[] input) {
-        String data = SerializationUtils.deserialize(input);
+    public byte[] compress(String input) {
 
         // Käydään merkkijono läpi.
-        byteCount = 0;
-        while (byteCount < data.length()) {
+        charCount = 0;
+        while (charCount < input.length()) {
             // Asetetaan etsintäikkunan alku.
-            searchWindowStart = setSearchWindowStart(byteCount, dictionaryLength);
+            searchWindowStart = setSearchWindowStart(charCount, dictionaryLength);
             // Bufferin loppu.
-            bufferEnd = setBufferEnd(byteCount, bufferLength, data.length());
+            bufferEnd = setBufferEnd(charCount, bufferLength, input.length());
             // Otetaan pala etsintäikkunasta. Jos charCount on nolla, etsintäikkuna on tyhjä.
-            searchSubstring = setSearchSubstring(data, byteCount, searchWindowStart);
+            searchSubstring = setSearchSubstring(input, charCount, searchWindowStart);
             // Haetaan etsintäikkunasta osumaa bufferin seuraavaan merkkiin.
             matchLength = 1;
-            String searchTarget = data.substring(byteCount, byteCount + matchLength);
+            String searchTarget = input.substring(charCount, charCount + matchLength);
 
+            //System.out.println(searchSubstring + ", " + searchTarget);
             if (searchSubstring.contains(searchTarget)) {
                 // Tällöin on saatu osuma yhden merkin pituiseen merkkijonoon. Tutkitaan, jatkuuko osuma pidemmälle. Ei kuitenkaan ylitetä bufferin pituutta.
                 while (matchLength <= bufferLength) {
                     // Tutkitaan, miten pitkälle päästään.
-                    searchTarget = data.substring(byteCount, byteCount + matchLength);
+                    searchTarget = input.substring(charCount, charCount + matchLength);
                     matchLocation = searchSubstring.indexOf(searchTarget);
 
-                    if ((matchLocation != -1) && (byteCount + matchLength) < data.length()) {
+                    if ((matchLocation != -1) && (charCount + matchLength) < input.length()) {
                         matchLength++;
                     } else {
                         break;
@@ -131,22 +131,23 @@ public class LZ {
                 // Asetetaan osuman pituus.
                 matchLength--;
                 // Haetaan etsintäikkunasta viimeisimmän osuman sijainti.
-                matchLocation = searchSubstring.indexOf(data.substring(byteCount, byteCount + matchLength));
+                matchLocation = searchSubstring.indexOf(input.substring(charCount, charCount + matchLength));
                 // Kasvatetaan merkkilaskuria.
-                byteCount += matchLength;
+                charCount += matchLength;
 
                 // Laitetaan koodipala tietoon tupleen.
-                int offset = (byteCount < (dictionaryLength + matchLength)) ? byteCount - matchLocation - matchLength : dictionaryLength - matchLocation;
-                String nextChar = data.substring(byteCount, byteCount + 1);
+                int offset = (charCount < (dictionaryLength + matchLength)) ? charCount - matchLocation - matchLength : dictionaryLength - matchLocation;
+                String nextChar = input.substring(charCount, charCount + 1);
                 compressedData.add(new Tuple(offset, matchLength, nextChar));
             } else {
-                String nextChar = data.substring(byteCount, byteCount + 1);
+                String nextChar = input.substring(charCount, charCount + 1);
                 compressedData.add(new Tuple(0, 0, nextChar));
             }
             // Kasvatetaan merkkilaskuria.
-            byteCount++;
+            charCount++;
         }
-        return SerializationUtils.serialize(compressedData);
+        
+        return compressedData.toByteArray();
     }
 
     /**

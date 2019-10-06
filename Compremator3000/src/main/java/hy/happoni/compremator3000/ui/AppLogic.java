@@ -3,7 +3,7 @@ package hy.happoni.compremator3000.ui;
 // tällä hetkellä tarvittavat importit
 import hy.happoni.compremator3000.domain.LZSS.LZSS;
 import hy.happoni.compremator3000.domain.LZW.LZW;
-import hy.happoni.compremator3000.domain.LZ77.LZ;
+import hy.happoni.compremator3000.domain.LZ77.LZ77;
 import hy.happoni.compremator3000.io.FileIO;
 
 /**
@@ -14,14 +14,14 @@ public class AppLogic {
     // tarvittavat muuttujat, käytännössä algoritmit suorittavat luokat
     private final FileIO fileIo;
     private final LZW lzw;
-    private final LZ lz;
+    private final LZ77 lz77;
     private final LZSS lzss;
 
     // konstruktori
     public AppLogic() {
         this.fileIo = new FileIO();
         this.lzw = new LZW();
-        this.lz = new LZ();
+        this.lz77 = new LZ77();
         this.lzss = new LZSS();
     }
     
@@ -36,11 +36,12 @@ public class AppLogic {
      */
     public void compress(String fileName, String algoType) {
         byte[] data = fileIo.readFileToByteArray(fileName);
+        String stringData = fileIo.readFileToString(fileName);
         boolean success = false;
 
         if (data != null) {
             if (algoType.equals("lz")) {
-                success = fileIo.writeCompressedFile(lz.compress(data), fileName, ".lz");
+                success = fileIo.writeCompressedFile(lz77.compress(stringData), fileName, ".lz");
             } else if (algoType.equals("lzw")) {
                 success = fileIo.writeCompressedFile(lzw.compress(data), fileName, ".lzw");
             } else if (algoType.equals("lzss")) {
@@ -70,7 +71,7 @@ public class AppLogic {
 
         if (data != null) {
             if (fileName.contains(".lz")) {
-                success = fileIo.writeBytesToFile((lz.decompress(data)), (fileName.substring(0, fileName.length() - 3)));
+                success = fileIo.writeBytesToFile((lz77.decompress(data)), (fileName.substring(0, fileName.length() - 3)));
             } else if (fileName.contains(".lzw")) {
                 success = fileIo.writeBytesToFile((lzw.decompress(data)), (fileName.substring(0, fileName.length() - 4)));
             } else if (fileName.contains(".lzss")) {

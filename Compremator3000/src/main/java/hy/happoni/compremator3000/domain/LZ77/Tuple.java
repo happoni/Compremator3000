@@ -12,14 +12,26 @@ public class Tuple implements Serializable {
     // seuraava merkki bufferissa pisimmän osuman jälkeen.
     int offset;
     int stringLength;
-    String nextChar;
+    char nextChar;
 
     public Tuple(int offset, int stringLength, String nextChar) {
         this.offset = offset;
         this.stringLength = stringLength;
-        this.nextChar = nextChar;
+        this.nextChar = nextChar.charAt(0);
     }
 
+    public int getOffset() {
+        return offset;
+    }
+
+    public int getStringLength() {
+        return stringLength;
+    }
+
+    public char getNextChar() {
+        return nextChar;
+    }   
+    
     @Override
     public String toString() {
         return offset + "," + stringLength + "," + nextChar;

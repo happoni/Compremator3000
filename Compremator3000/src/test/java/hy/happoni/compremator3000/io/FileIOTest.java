@@ -58,7 +58,7 @@ public class FileIOTest {
 
     @Test
     public void readCompressedFileReturnsCorrectByteArray() {
-        byte[] returnedBytes = fileIO.readCompressedFile(testReadPath);
+        byte[] returnedBytes = fileIO.readFileToByteArray(testReadPath);
         Assert.assertArrayEquals(returnedBytes, testBytes);
     }
 
@@ -75,7 +75,7 @@ public class FileIOTest {
     public void writeCompressedFileWritesCorrectText() {
         byte[] correct = testBytes;
         fileIO.writeCompressedFile(testBytes, testWritePath, ".lz");
-        byte[] tested = fileIO.readCompressedFile(testWritePath + ".lz");
+        byte[] tested = fileIO.readFileToByteArray(testWritePath + ".lz");
         Assert.assertArrayEquals(correct, tested);
     }
 

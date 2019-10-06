@@ -17,17 +17,17 @@ public class FileIO {
      * @param filePath - tekstitiedoston nimi
      * @return - tekstitiedosto merkkijonona
      */
-    public byte[] readFile(String filePath) {
-        byte[] input = null;
+    public String readFile(String filePath) {
+        String input = "";
         try {
-            input = Files.readAllBytes(Paths.get(filePath));
+            input = new String(Files.readAllBytes(Paths.get(filePath)));
         } catch (IOException e) {
             System.out.println("Something went wrong, maybe file is not found.");
         }
         return input;
     }
 
-    public char[] readFileToCharArray(String filePath) {        
+    public char[] readFileToCharArray(String filePath) {
         String s = "";
         try {
             s = new String(Files.readAllBytes(Paths.get(filePath)));
@@ -49,7 +49,7 @@ public class FileIO {
      * @return - tekstitiedosto byte arrayna, jos lukeminen ei onnistu,
      * palauttaa null
      */
-    public byte[] readCompressedFile(String filePath) {
+    public byte[] readFileToByteArray(String filePath) {
         byte[] input = null;
 
         try {
@@ -91,6 +91,16 @@ public class FileIO {
     public boolean writeFile(String uncompressed, String filepath) {
         try {
             Files.write(Paths.get(filepath), uncompressed.getBytes());
+            return true;
+        } catch (IOException e) {
+            System.out.println("Something has gone wrong.");
+        }
+        return false;
+    }
+
+    public boolean writeBytesToFile(byte[] uncompressed, String filepath) {
+        try {
+            Files.write(Paths.get(filepath), uncompressed);
             return true;
         } catch (IOException e) {
             System.out.println("Something has gone wrong.");

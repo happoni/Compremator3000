@@ -1,4 +1,4 @@
-package hy.happoni.compremator3000.domain;
+package hy.happoni.compremator3000.domain.LZSS;
 
 import java.io.Serializable;
 

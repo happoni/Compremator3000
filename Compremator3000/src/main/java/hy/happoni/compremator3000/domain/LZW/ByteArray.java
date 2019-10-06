@@ -1,36 +1,28 @@
-package hy.happoni.compremator3000.domain;
+package hy.happoni.compremator3000.domain.LZW;
 
 /**
- * Luokka toteuttaa LZW-algoritmin sanakirjan koodisanan alkuosan.
+ *
  */
-public class LZWPrefix {
+public class ByteArray {
 
-    private static final int INITSIZE = 1024;
+    private static final int INITIAL_SIZE = 1024;
     private byte[] array;
     private int size;
 
-    public LZWPrefix() {
-        this.array = new byte[INITSIZE];
+    public ByteArray() {
+        this.array = new byte[INITIAL_SIZE];
         this.size = 0;
     }
 
     public void add(byte b) {
         if (size == array.length) {
-            increaseArrayLength();
+            resizeArray();
         }
         array[size++] = b;
     }
 
-    private void increaseArrayLength() {
-        byte[] newArray = new byte[size * 2];
-        for (int i = 0; i < size; i++) {
-            newArray[i] = array[i];
-        }
-        array = newArray;
-    }
-
-    public void add(byte[] byteArray) {
-        for (int i = 0; i < byteArray.length; i++) {
+    public void add(byte[] array) {
+        for (int i = 0; i < array.length; i++) {
             add(array[i]);
         }
     }
@@ -51,6 +43,14 @@ public class LZWPrefix {
         return output;
     }
 
+    private void resizeArray() {
+        byte[] newArray = new byte[size * 2];
+        for (int i = 0; i < size; i++) {
+            newArray[i] = array[i];
+        }
+        array = newArray;
+    }
+
     public byte get(int index) {
         if (index < 0 || index >= size) {
             throw new ArrayIndexOutOfBoundsException();
@@ -58,18 +58,19 @@ public class LZWPrefix {
         return array[index];
     }
 
-    public void clear() {
-        size = 0;
-    }
-
-    public LZWPrefix duplicate() {
+    public ByteArray duplicate() {
         byte[] newArr = new byte[array.length];
         for (int i = 0; i < array.length; i++) {
             newArr[i] = array[i];
         }
-        LZWPrefix duplicate = new LZWPrefix();
+        ByteArray duplicate = new ByteArray();
         duplicate.array = newArr;
         duplicate.size = this.size;
         return duplicate;
     }
+
+    public void clear() {
+        size = 0;
+    }
+
 }

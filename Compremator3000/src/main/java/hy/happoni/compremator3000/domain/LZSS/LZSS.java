@@ -1,4 +1,4 @@
-package hy.happoni.compremator3000.domain;
+package hy.happoni.compremator3000.domain.LZSS;
 
 // tuodaan tässä vaiheessa tarvittavia importteja
 import java.util.ArrayList;
@@ -97,8 +97,9 @@ public class LZSS {
      * @return compressedData - byte arrayna lista tupleja, jotka kertovat
      * pakatun merkkijonon koodipalat.
      */
-    public byte[] compress(String input) {
-
+    public byte[] compress(byte[] data) {
+        String input = SerializationUtils.deserialize(data);
+        
         // Käydään merkkijono läpi.
         charCount = 0;
         while (charCount < input.length()) {
@@ -157,7 +158,7 @@ public class LZSS {
      * @param compressedData - byte arrayna lista tupleja
      * @return reconData - toString()-metodin avulla muodostettu merkkijono.
      */
-    public String decompress(byte[] compressedData) {
+    public byte[] decompress(byte[] compressedData) {
         ArrayList<LZSSTuple> compressed = SerializationUtils.deserialize(compressedData);
 
         // Luodaan dekoodattu merkkijono tähän talteen.
@@ -174,7 +175,8 @@ public class LZSS {
                 reconData.append(workingStr);
             }
         }
-        return reconData.toString();
+        byte[] output = SerializationUtils.serialize(reconData.toString());
+        return output;
     }
 
 }

@@ -17,7 +17,7 @@ public class FileIO {
      * @param filePath - tekstitiedoston nimi
      * @return - tekstitiedosto merkkijonona
      */
-    public String readFile(String filePath) {
+    public String readFileToString(String filePath) {
         String input = "";
         try {
             input = new String(Files.readAllBytes(Paths.get(filePath)));
@@ -70,6 +70,16 @@ public class FileIO {
      * @return - true, jos kirjoittaminen onnistui, muuten false
      */
     public boolean writeCompressedFile(byte[] compressedData, String filePath, String algoType) {
+        try {
+            Files.write(Paths.get(filePath + algoType), compressedData);
+            return true;
+        } catch (IOException e) {
+            System.out.println("Something went wrong.");
+        }
+        return false;
+    }
+
+    public boolean writeTuplesToFile(byte[] compressedData, String filePath, String algoType) {
         try {
             Files.write(Paths.get(filePath + algoType), compressedData);
             return true;

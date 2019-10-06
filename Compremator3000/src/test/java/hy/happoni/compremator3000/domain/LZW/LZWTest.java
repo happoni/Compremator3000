@@ -1,29 +1,22 @@
 package hy.happoni.compremator3000.domain.LZW;
 
-import hy.happoni.compremator3000.domain.LZW.LZW;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * Luokka, joka huolehtii LZW-algoritmin testauksesta.
  */
 public class LZWTest {
 
-    LZW lzw1;
+    LZW lzw;
 
     public LZWTest() {
     }
 
     @Before
     public void setUp() {
-        lzw1 = new LZW();
+        lzw = new LZW();
     }
-
+    
 //    @Test
 //    public void initDictionaryWorksCorrectly() {
 //        Map<String, Integer> testDict = lzw1.initDictionary();

@@ -1,7 +1,7 @@
 package hy.happoni.compremator3000.domain.LZW;
 
 /**
- *
+ * Apuluokka, jonka avulla pidetään dynaamista tavulistaa.
  */
 public class ByteArray {
 
@@ -9,11 +9,19 @@ public class ByteArray {
     private byte[] array;
     private int size;
 
+    /**
+     * Konstruktorilla lista isoksi ja kooksi nolla.
+     */
     public ByteArray() {
         this.array = new byte[INITIAL_SIZE];
         this.size = 0;
     }
 
+    /**
+     * Metodilla lisätään tavu tavulistaan. Tarvittaessa kasvatetaan listaa.
+     *
+     * @param b - lisättävä tavu
+     */
     public void add(byte b) {
         if (size == array.length) {
             resizeArray();
@@ -21,20 +29,41 @@ public class ByteArray {
         array[size++] = b;
     }
 
+    /**
+     * Voidaan lisätä myös tavulista tavulistalle. Hyödynnetään metodia add.
+     *
+     * @param array - lisättävä tavulista
+     */
     public void add(byte[] array) {
         for (int i = 0; i < array.length; i++) {
             add(array[i]);
         }
     }
 
+    /**
+     * Metodilla voidaan asettaa tavu tiettyyn paikkaan listassa.
+     *
+     * @param index - indeksi
+     * @param b - tavu
+     */
     public void set(int index, byte b) {
         array[index] = b;
     }
 
+    /**
+     * Metodilla voi hakea tavulistan koon.
+     *
+     * @return - koko
+     */
     public int size() {
         return size;
     }
 
+    /**
+     * Metodilla saa koko tavulistan.
+     *
+     * @return - uusi byte[], joka on tämä tavulista
+     */
     public byte[] getBytes() {
         byte[] output = new byte[size];
         for (int i = 0; i < size; i++) {
@@ -43,6 +72,9 @@ public class ByteArray {
         return output;
     }
 
+    /**
+     * Apumetodi, joka kasvattaa listaa, jos se täyttyy.
+     */
     private void resizeArray() {
         byte[] newArray = new byte[size * 2];
         for (int i = 0; i < size; i++) {
@@ -51,6 +83,12 @@ public class ByteArray {
         array = newArray;
     }
 
+    /**
+     * Metodilla saa tavun tietystä kohdasta tavulistaa.
+     *
+     * @param index - kohta, mistä haetaan
+     * @return - tavu siitä kohtaa
+     */
     public byte get(int index) {
         if (index < 0 || index >= size) {
             throw new ArrayIndexOutOfBoundsException();
@@ -58,6 +96,11 @@ public class ByteArray {
         return array[index];
     }
 
+    /**
+     * Metodilla voi kloonata tämän tavulistan.
+     *
+     * @return - samainen tavulista
+     */
     public ByteArray duplicate() {
         byte[] newArr = new byte[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -69,6 +112,10 @@ public class ByteArray {
         return duplicate;
     }
 
+    /**
+     * Metodi tyhjentää tavulistan (tai oikeastaan asettaa sen kooksi nolla,
+     * jolloin se täytetään alusta vanhan päälle.
+     */
     public void clear() {
         size = 0;
     }

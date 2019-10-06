@@ -1,29 +1,35 @@
 package hy.happoni.compremator3000.domain.LZW;
 
-// tuodaan kaikki importit nyt
-
 /**
  * Luokka, joka huolehtii Lempel-Ziv-Welch -algoritmin toteutuksesta.
  */
 public class LZW {
 
+    /**
+     * Metodi pakkaa byte arrayn LZW-algoritmilla kompaktimmaksi byte arrayksi.
+     * Tarvitsee luokkia Dictionary, Prefix ja ByteArray.
+     *
+     * @param input - byte array, luettu tekstitiedostosta, joka pakataan
+     * @return Apuluokka ByteArray huolehtii tavujen säilönnästä, metodilla
+     * getBytes annetaan koko ByteArrayn sisältö tavulistana.
+     */
     public byte[] compress(byte[] input) {
-        Dictionary dictionary = new Dictionary();
-        Prefix prefix = new Prefix();
-        ByteArray output = new ByteArray();
+        Dictionary dictionary = new Dictionary();           // Sanakirja alustetaan aina, kun se luodaan.
+        Prefix prefix = new Prefix();                       // Alkuosa, uusi alkuosa on aina tyhjä.
+        ByteArray output = new ByteArray();                 // ByteArray-apuluokka huolehtii ulosannista.
 
-        for (int i = 0; i < input.length; i++) {
-            if (dictionary.contains(prefix, input[i])) {
-                prefix.add(input[i]);
-            } else {
+        for (int i = 0; i < input.length; i++) { //         
+            if (dictionary.contains(prefix, input[i])) {    // Alkuosa + seuraava tavu = sana, katsotaan, löytyykö sanakirjasta jo.
+                prefix.add(input[i]);                       // Jos löytyy, alkuosa = alkuosa + tavu. Muulloin laitetaan sanakirjaan.
+            } else {                                        // Sanan indeksi laitetaan outputiin.
                 addBytes(output, dictionary.getPrefix(prefix));
-                if (!dictionary.add(prefix, input[i])) {
+                if (!dictionary.add(prefix, input[i])) {    // Jos sanakirja täyttyy, resetoidaan se.
                     dictionary = new Dictionary();
                 }
                 prefix.clear();
                 prefix.add(input[i]);
             }
-            if (dictionary.size() == 65536) {
+            if (dictionary.size() == 65536) {               // Jos sanakirja täyttyy, resetoidaan se.
                 dictionary = new Dictionary();
             }
         }
@@ -32,12 +38,20 @@ public class LZW {
         return output.getBytes();
     }
 
+    /**
+     * Metodi, joka purkaa pakatun byte arrayn niin ikään byte arrayksi.
+     * Käytetään purkamiseen luokkaa PrefixDictionary.
+     *
+     * @param input - byte array, joka sisältää pakatun "koodin"
+     * @return - ByteArray-apuluokan antama tavulista, siis purettu
+     * tekstitiedosto
+     */
     public byte[] decompress(byte[] input) {
         PrefixDictionary dictionary = new PrefixDictionary();
         ByteArray output = new ByteArray();
 
         int index = Byte.toUnsignedInt(input[0]) << 8 | Byte.toUnsignedInt(input[1]);
-        int old = index;
+        int old = index;                                                                
         addBytes(output, dictionary.get(index));
         byte nextByte;
 
@@ -67,12 +81,25 @@ public class LZW {
         return output.getBytes();
     }
 
+    /**
+     * Metodi laittaa ByteArray-apuluokkaan talteen purettu sana.
+     *
+     * @param array - ByteArray, johon talletetaan.
+     * @param bytes - Alkuosa, joka talletetaan.
+     */
     public void addBytes(ByteArray array, Prefix bytes) {
         for (int i = 0; i < bytes.size(); i++) {
             array.add(bytes.getBytes()[i]);
         }
     }
 
+    /**
+     * Metodi toimii muuten kuin edeltävä, mutta tavujen sijaan alkuosa on
+     * kokonaisulukuna. Käytetään siis pakatun "koodin" tallettamiseen.
+     *
+     * @param array
+     * @param prefix
+     */
     private void addBytes(ByteArray array, int prefix) {
         int end = prefix >> 8;
         array.add((byte) end);

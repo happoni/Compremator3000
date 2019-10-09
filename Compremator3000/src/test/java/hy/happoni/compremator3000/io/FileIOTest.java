@@ -51,7 +51,7 @@ public class FileIOTest {
 
     @Test
     public void readFileReturnsCorrectText() {
-        String returnedString = fileIO.readFile(testReadPath);
+        String returnedString = fileIO.readFileToString(testReadPath);
         assertEquals(returnedString, testText);
         assertFalse(returnedString.contains("666"));
     }
@@ -66,7 +66,7 @@ public class FileIOTest {
     public void writeFileWritesCorrectText() {
         String correct = "Heippalappu rapussa.";
         fileIO.writeFile(correct, testWritePath);
-        String tested = fileIO.readFile(testWritePath);
+        String tested = fileIO.readFileToString(testWritePath);
         assertEquals(correct, tested);
         assertFalse(tested.equals("ei ole oikein"));
     }

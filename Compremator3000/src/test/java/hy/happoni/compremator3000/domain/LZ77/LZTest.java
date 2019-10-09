@@ -2,11 +2,7 @@
 package hy.happoni.compremator3000.domain.LZ77;
 
 // tarvittavat importit testeihin
-import hy.happoni.compremator3000.domain.LZ77.Tuple;
-import hy.happoni.compremator3000.domain.LZ77.LZ;
 import java.util.ArrayList;
-import java.util.List;
-import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -16,8 +12,8 @@ import static org.junit.Assert.*;
  */
 public class LZTest {
 
-    LZ lz1;
-    LZ lz2;
+    LZ77 lz1;
+    LZ77 lz2;
     ArrayList<Tuple> codedToBe;
 
     public LZTest() {
@@ -25,8 +21,8 @@ public class LZTest {
 
     @Before
     public void setUp() {
-        lz1 = new LZ(15, 5);
-        lz2 = new LZ();
+        lz1 = new LZ77(15, 5);
+        lz2 = new LZ77();
     }
 
     @Test

@@ -16,17 +16,12 @@ public class Prefix {
     }
 
     /**
-     * Metodilla alkuosaan lisätään seuraava tavu. Ei kuitenkaan muuteta
-     * alkuosaa vaan muodostetaan uusi alkuosa. Hyödynnetään add-metodia.
+     * Metodilla palautetaan alkuosan koko.
      *
-     * @param b - seuraava tavu
-     * @return - alkuosa, johon on lisätty seuraava tavu (alkuosa + seuraava
-     * tavu)
+     * @return - kokonaislukuna alkuosan koko.
      */
-    public Prefix merge(byte b) {
-        Prefix merged = clone();
-        merged.add(b);
-        return merged;
+    public int size() {
+        return byteArray.size();
     }
 
     /**
@@ -38,15 +33,6 @@ public class Prefix {
     public boolean add(byte b) {
         byteArray.add(b);
         return true;
-    }
-
-    /**
-     * Metodilla palautetaan alkuosan koko.
-     *
-     * @return - kokonaislukuna alkuosan koko.
-     */
-    public int size() {
-        return byteArray.size();
     }
 
     /**
@@ -74,6 +60,21 @@ public class Prefix {
      */
     public void clear() {
         byteArray.clear();
+    }
+
+    /**
+     * Metodilla alkuosaan lisätään seuraava tavu. Ei kuitenkaan muuteta
+     * alkuosaa vaan muodostetaan uusi alkuosa. Hyödynnetään add-metodia.
+     *
+     * @param b - seuraava tavu
+     * @return - alkuosa, johon on lisätty seuraava tavu (alkuosa + seuraava
+     * tavu)
+     * @throws java.lang.CloneNotSupportedException
+     */
+    public Prefix merge(byte b) {
+        Prefix merged = clone();
+        merged.add(b);
+        return merged;
     }
 
     /**

@@ -27,8 +27,8 @@ public class LZTest {
 
     @Test
     public void constructorWithoutParametresWorks() {
-        assertEquals(lz2.dictionaryLength, 31);
-        assertEquals(lz2.bufferLength, 7);
+        assertEquals(lz2.dictionaryLength, 1024);
+        assertEquals(lz2.bufferLength, 20);
     }
 
     @Test

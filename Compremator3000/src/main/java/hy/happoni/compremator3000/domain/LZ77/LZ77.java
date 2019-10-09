@@ -1,7 +1,6 @@
 package hy.happoni.compremator3000.domain.LZ77;
 
 // Tuodaan tarvittavia importeja, poistetaan myöhemmässä vaiheessa tarpeettomiksi käyneet.
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.lang3.SerializationUtils;
@@ -38,8 +37,8 @@ public class LZ77 {
     // Parametriton konstruktori.
     public LZ77() {
         this.compressedData = new LZList();
-        this.dictionaryLength = 31;
-        this.bufferLength = 7;
+        this.dictionaryLength = 1024;
+        this.bufferLength = 20;
     }
 
     /**
@@ -114,7 +113,6 @@ public class LZ77 {
             matchLength = 1;
             String searchTarget = input.substring(charCount, charCount + matchLength);
 
-            //System.out.println(searchSubstring + ", " + searchTarget);
             if (searchSubstring.contains(searchTarget)) {
                 // Tällöin on saatu osuma yhden merkin pituiseen merkkijonoon. Tutkitaan, jatkuuko osuma pidemmälle. Ei kuitenkaan ylitetä bufferin pituutta.
                 while (matchLength <= bufferLength) {

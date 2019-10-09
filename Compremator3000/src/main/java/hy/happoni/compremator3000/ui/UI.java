@@ -83,10 +83,9 @@ public class UI {
 
     /**
      * Apumetodi, jolla valitaan pakkaamiseen käytettävä algoritmi. Käytännössä
-     * muuttaa merkkijonomuuttujaa käyttäjän syötteen mukaan (1 = lz, 2 = lzw, 3
-     * = lzss).
+     * muuttaa merkkijonomuuttujaa käyttäjän syötteen mukaan (1 = lz, 2 = lzw).
      *
-     * @return - käyttäjän syötteen mukaan joko "lz", "lzw" tai "lzss".
+     * @return - käyttäjän syötteen mukaan joko "lz" tai "lzw".
      */
     public String chooseAlgorithm() {
         while (true) {
@@ -94,17 +93,14 @@ public class UI {
             System.out.println("What algorithm shall we use?");
             System.out.println("[1] -- LZ77");
             System.out.println("[2] -- LZW");
-            //System.out.println("[3] -- LZSS");
 
             System.out.print("> ");
             String choice = reader.nextLine();
 
             if (choice.equals("1")) {
-                return "lz";
+                return "lz77";
             } else if (choice.equals("2")) {
                 return "lzw";
-            } else if (choice.equals("3")) {
-                return "lzss";
             }
         }
     }

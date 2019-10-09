@@ -1,18 +1,15 @@
 package hy.happoni.compremator3000.domain.LZ77;
 
-import java.io.Serializable;
-
 /**
- * Apuluokka, jota käytetään LZ77-algoritmissa.
+ * Apuluokka, jota käytetään LZ77-algoritmissa. Tuple säilöö tiedot pisimmän
+ * sanakirjasta löytyvän osuman sijainnista (offset), pisimmän osuman pituudesta
+ * (stringlength) ja osumaa seuraavasta merkistä (nextchar).
  */
-public class Tuple implements Serializable {
+public class Tuple {
 
-    // Offset pitää kirjaa sen pisimmän osuman sijainnista, joka sijaitsee
-    // sanakirjassa. StringLength on pisimmän osuman pituus. NextChar on
-    // seuraava merkki bufferissa pisimmän osuman jälkeen.
-    int offset;
-    int stringLength;
-    char nextChar;
+    int offset;         // pisimmän sanakirjasta löytyvän osuman sijainti
+    int stringLength;   // pisimmän osuman pituus
+    char nextChar;      // pisintä osumaa seuraava merkki
 
     public Tuple(int offset, int stringLength, String nextChar) {
         this.offset = offset;
@@ -30,8 +27,8 @@ public class Tuple implements Serializable {
 
     public char getNextChar() {
         return nextChar;
-    }   
-    
+    }
+
     @Override
     public String toString() {
         return offset + "," + stringLength + "," + nextChar;

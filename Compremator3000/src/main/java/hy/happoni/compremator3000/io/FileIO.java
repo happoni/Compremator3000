@@ -98,7 +98,7 @@ public class FileIO {
      * @param filepath - tiedoston nimi
      * @return - true, jos kirjoittaminen onnistuu, muuten false
      */
-    public boolean writeFile(String uncompressed, String filepath) {
+    public boolean writeStringToFile(String uncompressed, String filepath) {
         try {
             Files.write(Paths.get(filepath), uncompressed.getBytes());
             return true;

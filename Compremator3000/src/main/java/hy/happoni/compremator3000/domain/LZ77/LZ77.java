@@ -155,7 +155,7 @@ public class LZ77 {
      * @param compressedData - byte array listasta tupleja
      * @return reconData - toString()-metodin avulla muodostettu merkkijono.
      */
-    public byte[] decompress(byte[] compressedData) {
+    public String decompress(byte[] compressedData) {
         List<Tuple> compressed = SerializationUtils.deserialize(compressedData);
 
         // Luodaan dekoodattu merkkijono tähän talteen.
@@ -178,7 +178,6 @@ public class LZ77 {
                 reconData.append(nextTuple.nextChar);
             }
         }
-        byte[] bytes = SerializationUtils.serialize(reconData.toString());
-        return bytes;
+        return reconData.toString();
     }
 }

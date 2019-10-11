@@ -20,6 +20,10 @@ public class LZList {
         this.size = 0;
     }
 
+    public int size() {
+        return size;
+    }
+    
     /**
      * Metodilla lisätään tuple listalle. Tarvittaessa kasvatetaan taulukon
      * kokoa.

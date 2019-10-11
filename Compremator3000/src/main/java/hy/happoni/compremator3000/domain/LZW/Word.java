@@ -9,8 +9,7 @@ public class Word {
     private final int prefix;
     private final byte value;
     private Word first;
-    private Word left; // yritetään toteuttaa binäärihakupuuna, siksi vasen ja oikea
-//    private Word right;
+    private Word child;
 
     /**
      * Konstruktori, asetetaan sanan alkuosa ja tavu.
@@ -24,7 +23,7 @@ public class Word {
     }
 
     /**
-     * Metodiööa saa sanan alkuosan.
+     * Metodilla saa sanan alkuosan.
      *
      * @return - kokonaisulukuna alkuosa
      */
@@ -33,12 +32,27 @@ public class Word {
     }
 
     /**
-     * Metodilla saa sanana tavun
+     * Metodilla saa sanan tavun.
      *
      * @return - tavu
      */
     public byte getValue() {
         return value;
+    }
+
+    /**
+     * Metodilla lisätään lapsi sanalle. Jos on jo yksi lapsi, laitetaan se
+     * tietoon toiseksi. Muutoin ensimmäiseksi lapseksi.
+     *
+     * @param prefix - kokonaisulukuna alkuosa
+     * @param value - tavu
+     */
+    public void addChild(int prefix, byte value) {
+        Word child = new Word(prefix, value);
+        if (first != null) {
+            child.child = first;
+        }
+        first = child;
     }
 
     /**
@@ -55,30 +69,9 @@ public class Word {
         while (child != null) {
             if (child.getValue() == value) {
                 return child;
-//            } else if (child.getValue() < value) {
-//                child = child.left;
-//            } else {
-//                child = child.right;
-//            }            
             }
-            child = child.left;
+            child = child.child;
         }
         return null;
     }
-
-    /**
-     * Metodilla lisätään lapsi sanalle. Jos on jo lapsi, laitetaan se tietoon
-     * "serkuksi". Muutoin varsinaiseksi lapseksi.
-     *
-     * @param prefix - kokonaisulukna alkuosa
-     * @param value - tavu
-     */
-    public void addChild(int prefix, byte value) {
-        Word child = new Word(prefix, value);
-        if (first != null) {
-            child.left = first;
-        }
-        first = child;
-    }
-
 }

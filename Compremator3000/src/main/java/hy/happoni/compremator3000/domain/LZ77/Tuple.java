@@ -10,11 +10,18 @@ public class Tuple {
     int offset;         // pisimmän sanakirjasta löytyvän osuman sijainti
     int stringLength;   // pisimmän osuman pituus
     char nextChar;      // pisintä osumaa seuraava merkki
+    byte nextByte;      // pisintä osumaa seuraava tavu
 
     public Tuple(int offset, int stringLength, String nextChar) {
         this.offset = offset;
         this.stringLength = stringLength;
         this.nextChar = nextChar.charAt(0);
+    }
+
+    public Tuple(int offset, int byteLength, byte nextByte) {
+        this.offset = offset;
+        this.stringLength = byteLength;
+        this.nextByte = nextByte;
     }
 
     public int getOffset() {
@@ -29,9 +36,13 @@ public class Tuple {
         return nextChar;
     }
 
+//    @Override
+//    public String toString() {
+//        return offset + "," + stringLength + "," + nextChar;
+//    }
     @Override
     public String toString() {
-        return offset + "," + stringLength + "," + nextChar;
+        return offset + "," + stringLength + "," + nextByte;
     }
 
 }

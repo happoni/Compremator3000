@@ -3,6 +3,7 @@ package hy.happoni.compremator3000.ui;
 // tällä hetkellä tarvittavat importit
 import hy.happoni.compremator3000.domain.LZW.LZW;
 import hy.happoni.compremator3000.domain.LZ77.LZ77;
+import hy.happoni.compremator3000.domain.LZ77.LZ77TreeImp;
 import hy.happoni.compremator3000.io.FileIO;
 
 /**
@@ -14,12 +15,14 @@ public class AppLogic {
     private final FileIO fileIo;
     private final LZW lzw;
     private final LZ77 lz77;
+    private final LZ77TreeImp lz77w;
 
     // konstruktori
     public AppLogic() {
         this.fileIo = new FileIO();
         this.lzw = new LZW();
         this.lz77 = new LZ77();
+        this.lz77w = new LZ77TreeImp();
     }
     
     /**
@@ -38,7 +41,7 @@ public class AppLogic {
 
         if (data != null || !stringData.equals("")) {
             if (algoType.equals("lz77")) {
-                success = fileIo.writeCompressedFile(lz77.compress(stringData), fileName, ".lz77");
+                success = fileIo.writeCompressedFile(lz77w.encode(data), fileName, ".lz77");
             } else if (algoType.equals("lzw")) {
                 success = fileIo.writeCompressedFile(lzw.compress(data), fileName, ".lzw");
             }

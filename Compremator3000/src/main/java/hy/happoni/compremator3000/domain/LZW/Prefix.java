@@ -69,7 +69,6 @@ public class Prefix {
      * @param b - seuraava tavu
      * @return - alkuosa, johon on lisätty seuraava tavu (alkuosa + seuraava
      * tavu)
-     * @throws java.lang.CloneNotSupportedException
      */
     public Prefix merge(byte b) {
         Prefix merged = clone();

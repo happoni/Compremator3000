@@ -19,29 +19,29 @@ public class LZTest {
     public LZTest() {
     }
 
-    @Before
-    public void setUp() {
-        lz1 = new LZ77(15, 5);
-        lz2 = new LZ77();
-    }
-
-    @Test
-    public void constructorWithoutParametresWorks() {
-        assertEquals(lz2.dictionaryLength, 1024);
-        assertEquals(lz2.bufferLength, 20);
-    }
-
-    @Test
-    public void setSearchWindowSetsCorrectNumber() {
-        assertEquals(lz1.setSearchWindowStart(0, 15), 0);
-        assertEquals(lz1.setSearchWindowStart(16, 15), 1);
-    }
-
-    @Test
-    public void setBufferEndSetsCorrectNumber() {
-        assertEquals(lz1.setBufferEnd(0, 5, 10), 5);
-        assertEquals(lz1.setBufferEnd(9, 5, 10), 10);
-    }
+//    @Before
+//    public void setUp() {
+//        lz1 = new LZ77(15, 5);
+//        lz2 = new LZ77();
+//    }
+//
+//    @Test
+//    public void constructorWithoutParametresWorks() {
+//        assertEquals(lz2.dictionaryLength, 1024);
+//        assertEquals(lz2.bufferLength, 20);
+//    }
+//
+//    @Test
+//    public void setSearchWindowSetsCorrectNumber() {
+//        assertEquals(lz1.setSearchWindowStart(0, 15), 0);
+//        assertEquals(lz1.setSearchWindowStart(16, 15), 1);
+//    }
+//
+//    @Test
+//    public void setBufferEndSetsCorrectNumber() {
+//        assertEquals(lz1.setBufferEnd(0, 5, 10), 5);
+//        assertEquals(lz1.setBufferEnd(9, 5, 10), 10);
+//    }
 
 //    @Test
 //    public void setSearchSubstringSetsCorrectString() {

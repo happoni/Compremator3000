@@ -22,6 +22,15 @@ public class PrefixDictionary {
     }
 
     /**
+     * Metodilla saa sanakirjan koon.
+     *
+     * @return - koko
+     */
+    public int size() {
+        return size;
+    }
+
+    /**
      * Metodi lisää alkuosan sanakirjaan.
      *
      * @param prefix - alkuosa
@@ -47,31 +56,11 @@ public class PrefixDictionary {
     }
 
     /**
-     * Metodilla saa sanakirjan koon.
-     *
-     * @return - koko
-     */
-    public int size() {
-        return size;
-    }
-
-    /**
      * Asettaa sanakirjan koon 256:een, eli alustettuun sanakirjaan. Käytännössä
      * siis resetoi sanakirjan.
      */
     public void reset() {
         this.size = 256;
-    }
-
-    /**
-     * Tarvittaessa sanakirjaa (taulukkoa) täytyy kasvattaa (emmehän tiedä paljon purettavaa on).
-     */
-    private void resizeArray() {
-        Prefix[] newArray = new Prefix[size * 2];
-        for (int i = 0; i < size; i++) {
-            newArray[i] = array[i];
-        }
-        array = newArray;
     }
 
     /**
@@ -85,5 +74,17 @@ public class PrefixDictionary {
             array[size++] = prefix;
             b++;
         }
+    }
+
+    /**
+     * Tarvittaessa sanakirjaa (taulukkoa) täytyy kasvattaa (emmehän tiedä
+     * paljon purettavaa on).
+     */
+    private void resizeArray() {
+        Prefix[] newArray = new Prefix[size * 2];
+        for (int i = 0; i < size; i++) {
+            newArray[i] = array[i];
+        }
+        array = newArray;
     }
 }

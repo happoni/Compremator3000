@@ -19,17 +19,18 @@ public class ByteArray {
 
     /**
      * Metodi, jolla saadaan kokonaisluku suoraan ByteArrayhyn.
+     *
      * @param i - luku, joka muutetaan
      */
     public void add(int i) {
         byte[] number = new byte[4];
         number[0] = (byte) (i >> 24);
-        number[1] = (byte) (i >>16);
+        number[1] = (byte) (i >> 16);
         number[2] = (byte) (i >> 8);
         number[3] = (byte) (i);
         add(number);
-    }    
-    
+    }
+
     /**
      * Metodilla lisätään tavu tavulistaan. Tarvittaessa kasvatetaan listaa.
      *
@@ -86,17 +87,6 @@ public class ByteArray {
     }
 
     /**
-     * Apumetodi, joka kasvattaa listaa, jos se täyttyy.
-     */
-    private void resizeArray() {
-        byte[] newArray = new byte[size * 2];
-        for (int i = 0; i < size; i++) {
-            newArray[i] = array[i];
-        }
-        array = newArray;
-    }
-
-    /**
      * Metodilla saa tavun tietystä kohdasta tavulistaa.
      *
      * @param index - kohta, mistä haetaan
@@ -133,4 +123,14 @@ public class ByteArray {
         size = 0;
     }
 
+    /**
+     * Apumetodi, joka kasvattaa listaa, jos se täyttyy.
+     */
+    private void resizeArray() {
+        byte[] newArray = new byte[size * 2];
+        for (int i = 0; i < size; i++) {
+            newArray[i] = array[i];
+        }
+        array = newArray;
+    }
 }

@@ -17,7 +17,7 @@ public class Dictionary {
         this.dictionary = new Word[256];
         this.size = 256;
 
-        byte b = -128;                          // Tavun pienin arvo, isoin on 127.
+        byte b = -128;
         for (int i = 0; i < size; i++) {
             this.dictionary[i] = new Word(i, b);
             b++;
@@ -34,31 +34,24 @@ public class Dictionary {
     }
 
     /**
-     * Metodi, jolla etsitään sanaa sanakirjasta alkuosan perusteella.
-     * Käytännössä tutkii linkitettyä listaa. Ensimmäiseksi katsotaan alkuosan
-     * ensimmäisen tavun perusteella saadun sanan lapsia alkuosan seuraavien
-     * tavujen perusteella.
+     * Metodilla lisätään sana (alkuosa + seuraava tavu) sanakirjaan, eli
+     * käytännössä "edeltävän" sanan lapseksi.
      *
-     * @param bytes - alkuosa Prefix-apuluokan avulla esitettynä
-     * @return - Palautetaan null, jos sanaa ei löydy, jos löytyy palautetaan se
-     * sana.
+     * @param bytes - alkuosa
+     * @param nextByte - seuraava tavu
+     * @return - tosi
      */
-    private Word searchWord(Prefix bytes) {
-        Word w = dictionary[128 + bytes.get(0)];
-        for (int i = 1; i < bytes.size(); i++) {
-            w = w.getChild(bytes.get(i));
-            if (w == null) {
-                return null;
-            }
-        }
-        return w;
+    public boolean add(Prefix bytes, byte nextByte) {
+        Word w = searchWord(bytes);
+        w.addChild(size++, nextByte);
+        return true;
     }
 
     /**
      * Metodi, joka antaa tietyn sanan alkuosan. Hyödyntää searchWord-metodia.
      *
      * @param bytes - Alkuosa
-     * @return - kokonaisulukuna alkuosa (eli sen indeksi sanakirjassa)
+     * @return - kokonaislukuna alkuosa (eli sen indeksi sanakirjassa)
      */
     public int getPrefix(Prefix bytes) {
         if (bytes.size() == 0) {
@@ -69,7 +62,6 @@ public class Dictionary {
             return dictionary[i].getPrefix();
         }
         Word w = searchWord(bytes);
-        // voiko w olla null?
         return w.getPrefix();
     }
 
@@ -97,16 +89,23 @@ public class Dictionary {
     }
 
     /**
-     * Metodilla lisätään sana (alkuosa + seuraava tavu) sanakirjaan, eli
-     * käytännössä "edeltävän" sanan lapseksi.
+     * Metodi, jolla etsitään sanaa sanakirjasta alkuosan perusteella.
+     * Käytännössä tutkii linkitettyä listaa. Ensimmäiseksi katsotaan alkuosan
+     * ensimmäisen tavun perusteella saadun sanan lapsia alkuosan seuraavien
+     * tavujen perusteella.
      *
-     * @param bytes - alkuosa
-     * @param nextByte - seuraava tavu
-     * @return - tosi
+     * @param bytes - alkuosa Prefix-apuluokan avulla esitettynä
+     * @return - Palautetaan null, jos sanaa ei löydy, jos löytyy palautetaan se
+     * sana.
      */
-    public boolean add(Prefix bytes, byte nextByte) {
-        Word w = searchWord(bytes);
-        w.addChild(size++, nextByte);
-        return true;
+    private Word searchWord(Prefix bytes) {
+        Word w = dictionary[128 + bytes.get(0)];
+        for (int i = 1; i < bytes.size(); i++) {
+            w = w.getChild(bytes.get(i));
+            if (w == null) {
+                return null;
+            }
+        }
+        return w;
     }
 }

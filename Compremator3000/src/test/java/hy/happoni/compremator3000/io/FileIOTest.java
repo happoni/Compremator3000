@@ -62,14 +62,14 @@ public class FileIOTest {
         Assert.assertArrayEquals(returnedBytes, testBytes);
     }
 
-    @Test
-    public void writeFileWritesCorrectText() {
-        String correct = "Heippalappu rapussa.";
-        fileIO.writeFile(correct, testWritePath);
-        String tested = fileIO.readFileToString(testWritePath);
-        assertEquals(correct, tested);
-        assertFalse(tested.equals("ei ole oikein"));
-    }
+//    @Test
+//    public void writeFileWritesCorrectText() {
+//        String correct = "Heippalappu rapussa.";
+//        fileIO.writeFile(correct, testWritePath);
+//        String tested = fileIO.readFileToString(testWritePath);
+//        assertEquals(correct, tested);
+//        assertFalse(tested.equals("ei ole oikein"));
+//    }
 
     @Test
     public void writeCompressedFileWritesCorrectText() {

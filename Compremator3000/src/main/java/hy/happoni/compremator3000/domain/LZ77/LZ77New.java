@@ -199,6 +199,9 @@ public class LZ77New {
             }
             byteCount++;
         }
+        
+        //System.out.println(compressedData.size());
+        
         return compressedData.toByteArray();
     }
     

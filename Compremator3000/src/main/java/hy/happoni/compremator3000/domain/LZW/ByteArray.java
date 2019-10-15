@@ -55,16 +55,6 @@ public class ByteArray {
     }
 
     /**
-     * Metodilla voidaan asettaa tavu tiettyyn paikkaan listassa.
-     *
-     * @param index - indeksi
-     * @param b - tavu
-     */
-    public void set(int index, byte b) {
-        array[index] = b;
-    }
-
-    /**
      * Metodilla voi hakea tavulistan koon.
      *
      * @return - koko

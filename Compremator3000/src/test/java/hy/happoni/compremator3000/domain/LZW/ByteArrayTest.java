@@ -44,16 +44,4 @@ public class ByteArrayTest {
         }
         assertEquals(5000, ba.size());
     }
-
-    /**
-     * Testillä tarkistetaan, että set-metodi asettaa oikean tavun oikeaan
-     * paikkaan.
-     */
-    @Test
-    public void setSetsCorrectByteToCorrectIndex() {
-        ba.add(30);
-        ba.set(0, b);
-        assertTrue(ba.get(0) == b);
-        assertFalse(ba.get(1) == 1);
-    }
 }

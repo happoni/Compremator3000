@@ -61,7 +61,7 @@ public class Dictionary {
             int i = 128 + bytes.get(0);
             return dictionary[i].getPrefix();
         }
-        Word w = searchWord(bytes);
+        Word w = searchWord(bytes);        
         return w.getPrefix();
     }
 
@@ -99,7 +99,7 @@ public class Dictionary {
      * sana.
      */
     private Word searchWord(Prefix bytes) {
-        Word w = dictionary[128 + bytes.get(0)];
+        Word w = dictionary[bytes.get(0) + 128];
         for (int i = 1; i < bytes.size(); i++) {
             w = w.getChild(bytes.get(i));
             if (w == null) {

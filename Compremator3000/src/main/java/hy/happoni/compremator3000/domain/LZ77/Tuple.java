@@ -6,22 +6,30 @@ package hy.happoni.compremator3000.domain.LZ77;
  * (stringlength) ja osumaa seuraavasta merkistä (nextchar).
  */
 public class Tuple {
+//
+//    int offset;         // pisimmän sanakirjasta löytyvän osuman sijainti
+//    int stringLength;   // pisimmän osuman pituus
+//    byte nextByte;      // pisintä osumaa seuraava merkki
 
-    int offset;         // pisimmän sanakirjasta löytyvän osuman sijainti
-    int stringLength;   // pisimmän osuman pituus
-    char nextChar;      // pisintä osumaa seuraava merkki
-
+    short offset;
+    short byteLength;
+    byte nextByte;
+    
     /**
      * Konstruktorilla tupleen heti tietoon kaikki oleellinen.
      *
      * @param offset - pisimmän sanakirjasta löytyvän osuman sijainti
      * @param stringLength - pisimmän osuman pituus
-     * @param nextChar - pisintä osumaa seuraava merkki
+     * @param nextByte
      */
-    public Tuple(int offset, int stringLength, String nextChar) {
-        this.offset = offset;
-        this.stringLength = stringLength;
-        this.nextChar = nextChar.charAt(0);
+    public Tuple(int offset, int byteLength, byte nextByte) {
+//        this.offset = offset;
+//        this.stringLength = stringLength;
+//        this.nextByte = nextByte;
+    this.offset = (short) offset;
+    this.byteLength = (short) byteLength;
+    this.nextByte = nextByte;
+
     }
 
     /**
@@ -29,7 +37,7 @@ public class Tuple {
      *
      * @return - offsetin arvo
      */
-    public int getOffset() {
+    public short getOffset() {
         return offset;
     }
 
@@ -38,8 +46,8 @@ public class Tuple {
      *
      * @return - pisimmän osuman pituus
      */
-    public int getStringLength() {
-        return stringLength;
+    public short getStringLength() {
+        return byteLength;
     }
 
     /**
@@ -47,7 +55,7 @@ public class Tuple {
      *
      * @return - pisintä osumaa seuraava merkki
      */
-    public char getNextChar() {
-        return nextChar;
+    public byte getNextByte() {
+        return nextByte;
     }
 }

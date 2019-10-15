@@ -75,7 +75,7 @@ public class LZList {
         for (int i = 0; i < size; i++) {
             bytes.add(values[i].getOffset());
             bytes.add(values[i].getStringLength());
-            bytes.add((byte) values[i].getNextChar());
+            bytes.add(values[i].getNextByte());
         }
 
         return bytes.getBytes();

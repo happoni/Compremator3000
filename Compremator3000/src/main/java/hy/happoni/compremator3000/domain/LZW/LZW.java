@@ -47,15 +47,15 @@ public class LZW {
      * tekstitiedosto
      */
     public byte[] decompress(byte[] input) {
-        PrefixDictionary dictionary = new PrefixDictionary();
+        PrefixDictionary dictionary = new PrefixDictionary();   
         ByteArray output = new ByteArray();
 
-        int index = Byte.toUnsignedInt(input[0]) << 8 | Byte.toUnsignedInt(input[1]);
+        int index = Byte.toUnsignedInt(input[0]) << 8 | Byte.toUnsignedInt(input[1]);   
         int old = index;                                                                
         addBytes(output, dictionary.get(index));
         byte nextByte;
 
-        for (int i = 2; i < input.length; i += 2) {
+        for (int i = 2; i < input.length; i = i + 2) {
             index = Byte.toUnsignedInt(input[i]) << 8 | Byte.toUnsignedInt(input[i + 1]);
             if (dictionary.size() > index) {
                 addBytes(output, dictionary.get(index));
@@ -82,7 +82,7 @@ public class LZW {
     }
 
     /**
-     * Metodi laittaa ByteArray-apuluokkaan talteen purettu sana.
+     * Metodi laittaa ByteArray-apuluokkaan talteen puretun sanan.
      *
      * @param array - ByteArray, johon talletetaan.
      * @param bytes - Alkuosa, joka talletetaan.

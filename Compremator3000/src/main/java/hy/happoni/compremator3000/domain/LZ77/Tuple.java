@@ -50,14 +50,4 @@ public class Tuple {
     public char getNextChar() {
         return nextChar;
     }
-
-    /**
-     * Tulostusmetodi.
-     *
-     * @return - Tuplen tiedot merkkijonona
-     */
-    @Override
-    public String toString() {
-        return offset + "," + stringLength + "," + nextChar;
-    }
 }

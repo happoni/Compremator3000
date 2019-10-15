@@ -10,13 +10,13 @@ import static org.junit.Assert.*;
 /**
  * Luokka, joka huolehtii LZ77-algoritmin testauksesta.
  */
-public class LZTest {
+public class LZ77Test {
 
     LZ77 lz1;
     LZ77 lz2;
     ArrayList<Tuple> codedToBe;
 
-    public LZTest() {
+    public LZ77Test() {
     }
 
 //    @Before

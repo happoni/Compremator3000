@@ -27,24 +27,54 @@ public class LZ77New {
     public LZ77New() {
         this.compressedData = new LZList();
         this.dictionaryLength = 16000;
-        this.bufferEnd = 32;        // Katsotaan aina 32 seuraavaa tavua (tai vähemmän, jos ollaan aivan lopussa)
+        this.bufferEnd = 32;                                                    // Katsotaan aina 32 seuraavaa tavua (tai vähemmän, jos ollaan aivan lopussa)
         this.byteCount = 0;
     }
 
+    /**
+     * Metodilla asetetaan sanakirjan alkupiste. Alkupiste "liukuu"
+     * etsintäikkunan mukana.
+     *
+     * @param byteCount - Sen tavun indeksi, jota ollaan seuraavaksi tutkimassa.
+     * @param dictionaryLength - Sanakirjan maksimipituus. Asetettu
+     * konstruktorissa.
+     * @return 0, jos ei olla vielä tutkittu tavuja yli sanakirjan
+     * maksimipituutta, muutoin tavun indeksi - sanakirjan maksimipituus.
+     */
     public int setDictionaryBegin(int byteCount, int dictionaryLength) {
-        if (byteCount - dictionaryLength >= 0) {    // Jos sanakirja on pidempi kuin, missä kohtaa mennään, sanakirja alkaa nollasta.
+        if (byteCount - dictionaryLength >= 0) {
             return byteCount - dictionaryLength;
         }
         return 0;
     }
 
+    /**
+     * Metodilla asetetaan bufferin, eli myös etsintäikkunan loppupiste. Tämän
+     * yli ei siis tutkita tavuja.
+     *
+     * @param byteCount - Sen tavun indeksi, jota ollaan seuraavaksi tutkimassa.
+     * @param inputLength - Syötteen pituus.
+     * @return Jos ei olla lähellä syötteen loppua, eli tavun indeksi + bufferin
+     * pituus ovat alle syötteen pituuden, palautetaan tavun indeksi + bufferin
+     * pituus. Muutoin syötteen pituus.
+     */
     public int setBufferEnd(int byteCount, int inputLength) {
-        if (byteCount + bufferEnd < inputLength) {     // Eli kohta, jossa mennään + bufferin loppu, jos se on alle syötteen pituuden, bufferi saa olla 32 pitkä.
+        if (byteCount + bufferEnd < inputLength) {
             return byteCount + bufferEnd;
         }
-        return inputLength; // Muulloin bufferin pitää loppua siihen mihin syötekin.
+        return inputLength;
     }
 
+    /**
+     * Metodilla asetetaan sanakirja tavulistaksi, eli aina haluttu pala
+     * syötteestä listaksi, josta osumia haetaan.
+     *
+     * @param input - Syöte.
+     * @param byteCount - Tämänhetkisen tavun indeksi.
+     * @param dictionaryBegin - Sanakirjan alkupiste.
+     * @return Null, jos tutkitaan ensimmäistä tavua, muutoin sanakirjan
+     * kokoinen byte array.
+     */
     public byte[] setSearchArray(byte[] input, int byteCount, int dictionaryBegin) {
         if (byteCount == 0) {
             return null;
@@ -56,6 +86,15 @@ public class LZ77New {
         return searchArray;
     }
 
+    /**
+     * Metodi, jolla asetetaan bufferi, jonka tavuja haetaan sanakirjasta. Sama
+     * idea kuin metodissa setSearchArray.
+     *
+     * @param input - Syöte.
+     * @param byteCount - Tavun indeksi.
+     * @param matchLength - Osuman pituus.
+     * @return Byte array, jossa bufferista otettu hakukohde.
+     */
     public byte[] setSearchTarget(byte[] input, int byteCount, int matchLength) {
         byte[] searchTarget = new byte[matchLength];
         for (int i = 0; i < searchTarget.length; i++) {
@@ -64,6 +103,14 @@ public class LZ77New {
         return searchTarget;
     }
 
+    /**
+     * Metodi kertoo jokseenkin tehokkaasti, onko taulukko toisen osataulukko.
+     * Käytetään tunnistamaan hakukohteet sanakirjasta.
+     *
+     * @param searchDictionary - Sanakirja.
+     * @param searchTarget - Hakukohde.
+     * @return True, jos hakukohde on sanakirjassa, muuten false.
+     */
     public boolean isSubArray(byte[] searchDictionary, byte[] searchTarget) {
         if (searchDictionary == null) {
             return false;
@@ -84,6 +131,15 @@ public class LZ77New {
         return false;
     }
 
+    /**
+     * Metodi kertoo osataulukon indeksin taulukossa. Olisi voinut yhdistää
+     * isSubArray-metodiin, mutta jäi nyt näin...
+     *
+     * @param searchDictionary - Sanakirja.
+     * @param searchTarget - Hakukohde.
+     * @return Hakukohteen indeksi sanakirjassa tai -1, jos sitä ei löydy
+     * sieltä.
+     */
     public int indexOfByteArray(byte[] searchDictionary, byte[] searchTarget) {
         int i = 0, j = 0;
         while (i < searchDictionary.length && j < searchTarget.length) {
@@ -101,6 +157,13 @@ public class LZ77New {
         return -1;
     }
 
+    /**
+     * Metodilla pakataan annettu syöte tupleja hyväksi käyttäen pienempään
+     * tilaan.
+     *
+     * @param input - Syöte byte arrayna.
+     * @return Pakattu tuplelista byte arrayna.
+     */
     public byte[] compress(byte[] input) {
         int inputLength = input.length;
 
@@ -112,10 +175,9 @@ public class LZ77New {
             byte[] searchTarget = setSearchTarget(input, byteCount, matchLength); // Asetetaan haettava byte array.   
 
             if (isSubArray(searchDictionary, searchTarget)) {                   // Tavu on jo sanakirjassa, eli saimme osuman yhden tavun mittaiseen tavujonoon.
-                while (matchLength <= bufferEnd) {                                     // Tutkitaan, jatkuuko osuma pidemmälle, muttei ylitetä bufferin pituutta 32.
+                while (matchLength <= bufferEnd) {                              // Tutkitaan, jatkuuko osuma pidemmälle, muttei ylitetä bufferin pituutta 32.
                     searchTarget = setSearchTarget(input, byteCount, matchLength);
                     matchLocation = indexOfByteArray(searchDictionary, searchTarget);
-
                     if ((matchLocation != -1) && (byteCount + matchLength < input.length)) {
                         matchLength++;
                     } else {
@@ -137,10 +199,10 @@ public class LZ77New {
             }
             byteCount++;
         }
-
-        System.out.println(compressedData.size());
-
         return compressedData.toByteArray();
     }
-
+    
+    
+    
+    
 }

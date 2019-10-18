@@ -46,7 +46,7 @@ public class Tuple {
      *
      * @return - pisimmän osuman pituus
      */
-    public short getStringLength() {
+    public short getByteLength() {
         return byteLength;
     }
 

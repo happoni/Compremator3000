@@ -29,7 +29,7 @@ public class TupleTest {
     
     @Test
     public void getStringLengthReturnsCorrectValue() {
-        assertEquals(10, t.getStringLength());
+        assertEquals(10, t.getByteLength());
     }
     
     @Test

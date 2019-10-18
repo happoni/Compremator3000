@@ -68,7 +68,7 @@ public class AppLogic {
 
         if (data != null) {
             if (fileName.contains(".lz77")) {
-                //success = fileIo.writeBytesToFile((lz77.decompress(data)), (fileName.substring(0, fileName.length() - 5)));
+                success = fileIo.writeBytesToFile((lz77.decompress(data)), (fileName.substring(0, fileName.length() - 5)));
             } else if (fileName.contains(".lzw")) {
                 success = fileIo.writeBytesToFile((lzw.decompress(data)), (fileName.substring(0, fileName.length() - 4)));
             }

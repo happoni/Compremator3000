@@ -16,7 +16,7 @@ public class ByteArray {
         this.array = new byte[INITIAL_SIZE];
         this.size = 0;
     }
-
+        
     /**
      * Metodi, jolla saadaan kokonaisluku suoraan ByteArrayhyn.
      *

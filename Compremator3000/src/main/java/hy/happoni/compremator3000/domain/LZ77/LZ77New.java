@@ -1,5 +1,7 @@
 package hy.happoni.compremator3000.domain.LZ77;
 
+import hy.happoni.compremator3000.domain.LZW.ByteArray;
+
 /**
  * Luokka, joka toteuttaa LZ77-algoritmin. Saa syötteenään tavulistan (byte
  * array) ja pakkaa sen tupleiksi, jotka sisältävät tiedon ennalta tekstistä
@@ -199,13 +201,65 @@ public class LZ77New {
             }
             byteCount++;
         }
-        
+
         //System.out.println(compressedData.size());
-        
         return compressedData.toByteArray();
     }
-    
-    
-    
-    
+
+    /**
+     * Metodi purkaa pakatun tiedoston takaisin alkuperäiseksi tiedostoksi.
+     *
+     * @param input - pakattu tiedosto
+     * @return - purettu tavulista
+     */
+    public byte[] decompress(byte[] input) {
+        ByteArray reconData = new ByteArray();                                  // Kootaan alkuperäinen tiedosto tänne.
+        LZList tuples = inputToTupleList(input);                                // Muodostetaan pakatun tiedoston tavuista lista tupleja.
+        
+        for (int i = 0; i < tuples.size(); i++) {                               
+            if (tuples.get(i).getByteLength() == 0) {
+                reconData.add(tuples.get(i).getNextByte());
+            } else {
+                for (int j = 0; j < tuples.get(i).getByteLength(); j++) {
+                    byte workingByte = reconData.get(reconData.size() - tuples.get(i).getOffset());
+                    reconData.add(workingByte);                    
+                }
+                reconData.add(tuples.get(i).getNextByte());
+            }
+        }
+        return reconData.getBytes();
+    }
+
+    /**
+     * Apumetodi, jolla muodostetaan pakatun tiedoston tavuista lista tupleja.
+     *
+     * @param input - pakattu tiedosto
+     * @return tuples - lista tupleja
+     */
+    public LZList inputToTupleList(byte[] input) {
+        LZList tuples = new LZList();
+
+        for (int i = 0; i < input.length; i = i + 5) {
+            byte[] offset = new byte[2];
+            byte[] length = new byte[2];
+            offset[0] = input[i];
+            offset[1] = input[i + 1];
+            length[0] = input[i + 2];
+            length[1] = input[i + 3];
+            tuples.add(new Tuple(bytesToShort(offset), bytesToShort(length), input[i + 4]));
+        }
+
+        return tuples;
+    }
+
+    /**
+     * Apumetodi byte arrayn muuntamiseen shortiksi.
+     *
+     * @param bytes - byte array
+     * @return haluttu short
+     */
+    public short bytesToShort(byte[] bytes) {
+        return (short) (((bytes[0] & 0xFF) << 8) | ((bytes[1] & 0xFF)));
+    }
+
 }

@@ -47,15 +47,15 @@ public class LZW {
      * tekstitiedosto
      */
     public byte[] decompress(byte[] input) {
-        PrefixDictionary dictionary = new PrefixDictionary();   
-        ByteArray output = new ByteArray();
+        PrefixDictionary dictionary = new PrefixDictionary();                   
+        ByteArray output = new ByteArray();                                     // tähän kerätään purettu tiedosto
 
-        int index = Byte.toUnsignedInt(input[0]) << 8 | Byte.toUnsignedInt(input[1]);   
-        int old = index;                                                                
-        addBytes(output, dictionary.get(index));
+        int index = Byte.toUnsignedInt(input[0]) << 8 | Byte.toUnsignedInt(input[1]); // muutetaan tavuista integeriksi
+        int old = index;                                                        // pidetään kirjaa vanhasta indeksistä
+        addBytes(output, dictionary.get(index));                                
         byte nextByte;
 
-        for (int i = 2; i < input.length; i = i + 2) {
+        for (int i = 2; i < input.length; i = i + 2) {                          // kaksi tavua kuvaavat aina yhtä indeksiä
             index = Byte.toUnsignedInt(input[i]) << 8 | Byte.toUnsignedInt(input[i + 1]);
             if (dictionary.size() > index) {
                 addBytes(output, dictionary.get(index));
@@ -94,8 +94,9 @@ public class LZW {
     }
 
     /**
-     * Metodi toimii muuten kuin edeltävä, mutta tavujen sijaan alkuosa on
-     * kokonaisulukuna. Käytetään siis pakatun "koodin" tallettamiseen.
+     * Metodi toimii muuten kuin addBytes, joka saa bytearrayn ja prefixin,
+     * mutta tavujen sijaan alkuosa on kokonaisulukuna. Käytetään siis pakatun
+     * "koodin" tallettamiseen.
      *
      * @param array
      * @param prefix
@@ -105,5 +106,4 @@ public class LZW {
         array.add((byte) end);
         array.add((byte) prefix);
     }
-
 }

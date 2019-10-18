@@ -5,7 +5,6 @@ package hy.happoni.compremator3000.domain.LZW;
  */
 public class ByteArray {
 
-    private static final int INITIAL_SIZE = 1024;
     private byte[] array;
     private int size;
 
@@ -13,7 +12,7 @@ public class ByteArray {
      * Konstruktorilla lista isoksi ja kooksi nolla.
      */
     public ByteArray() {
-        this.array = new byte[INITIAL_SIZE];
+        this.array = new byte[1024];
         this.size = 0;
     }
         
@@ -29,19 +28,6 @@ public class ByteArray {
         add(number);
     }
 
-//    /**
-//     * Metodi, jolla saadaan kokonaisluku suoraan ByteArrayhyn.
-//     *
-//     * @param i - luku, joka muutetaan
-//     */
-//    public void add(int i) {
-//        byte[] number = new byte[4];
-//        number[0] = (byte) (i >> 24);
-//        number[1] = (byte) (i >> 16);
-//        number[2] = (byte) (i >> 8);
-//        number[3] = (byte) (i);
-//        add(number);
-//    }
     /**
      * Metodilla lisätään tavu tavulistaan. Tarvittaessa kasvatetaan listaa.
      *

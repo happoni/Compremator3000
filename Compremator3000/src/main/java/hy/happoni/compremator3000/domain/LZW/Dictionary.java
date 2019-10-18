@@ -54,9 +54,6 @@ public class Dictionary {
      * @return - kokonaislukuna alkuosa (eli sen indeksi sanakirjassa)
      */
     public int getPrefix(Prefix bytes) {
-        if (bytes.size() == 0) {
-            throw new IllegalArgumentException("Prefix can't be empty.");
-        }
         if (bytes.size() == 1) {
             int i = 128 + bytes.get(0);
             return dictionary[i].getPrefix();
@@ -82,10 +79,7 @@ public class Dictionary {
         if (w == null) {
             return false;
         }
-        if (w.getChild(nextByte) == null) {
-            return false;
-        }
-        return true;
+        return w.getChild(nextByte) != null;
     }
 
     /**

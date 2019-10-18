@@ -202,7 +202,6 @@ public class LZ77 {
             byteCount++;
         }
 
-        //System.out.println(compressedData.size());
         return compressedData.toByteArray();
     }
 

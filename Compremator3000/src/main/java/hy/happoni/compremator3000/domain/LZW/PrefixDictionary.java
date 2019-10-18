@@ -7,7 +7,6 @@ package hy.happoni.compremator3000.domain.LZW;
  */
 public class PrefixDictionary {
 
-    private static final int INITIAL_SIZE = 1024;
     private Prefix[] array;
     private int size;
 
@@ -16,7 +15,7 @@ public class PrefixDictionary {
      * käytännössä alustetaan sanakirja.
      */
     public PrefixDictionary() {
-        this.array = new Prefix[INITIAL_SIZE];
+        this.array = new Prefix[1024];
         this.size = 0;
         populateDictionary();
     }

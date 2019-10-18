@@ -26,11 +26,11 @@ public class ByteArrayTest {
      * Testillä tarkistetaan, että kokonaisluvun lisääminen onnistuu oikein.
      */
     @Test
-    public void addIntAddsCorrectValue() {
-        int i = 69;
+    public void addShortAddsCorrectValue() {
+        short i = 69;
         ba.add(i);
-        assertEquals(4, ba.size());
-        assertEquals(i, ByteBuffer.wrap(ba.getBytes()).getInt());
+        assertEquals(2, ba.size());
+        assertEquals(i, ByteBuffer.wrap(ba.getBytes()).getShort());
     }
 
     /**

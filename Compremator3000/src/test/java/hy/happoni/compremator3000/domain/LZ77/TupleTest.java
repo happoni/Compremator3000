@@ -19,7 +19,8 @@ public class TupleTest {
     
     @Before
     public void setUp() {
-        t = new Tuple(5, 10, "l");
+        byte b = 100;
+        t = new Tuple(5, 10, b);
     }    
 
     @Test
@@ -34,9 +35,8 @@ public class TupleTest {
     
     @Test
     public void getNextCharReturnsCorrectValue() {
-        String a = "l";
-        char c = a.charAt(0);
-        assertEquals(c, t.getNextChar());
+        byte a = 100;
+        assertEquals(a, t.getNextByte());
     }
 
 }

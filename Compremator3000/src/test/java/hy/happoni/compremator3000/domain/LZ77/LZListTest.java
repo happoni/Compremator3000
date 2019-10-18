@@ -20,7 +20,8 @@ public class LZListTest {
     @Before
     public void setUp() {
         list = new LZList();
-        list.add(new Tuple(1, 2, "o"));
+        byte b = 15;
+        list.add(new Tuple(1, 2, b));
     }
 
     /**
@@ -36,8 +37,9 @@ public class LZListTest {
      */
     @Test
     public void addingManyValuesIncreasesArraySize() {
+        byte a = 77;
         for (int i = 0; i < 200; i++) {
-            list.add(new Tuple(1, i, "j"));
+            list.add(new Tuple(1, i, a));
         }
         assertEquals(201, list.size());
     }
@@ -48,7 +50,7 @@ public class LZListTest {
     @Test
     public void getReturnsCorrectTuple() {
         assertEquals(1, list.get(0).offset);
-        assertEquals(2, list.get(0).stringLength);       
+        assertEquals(2, list.get(0).byteLength);       
     }
     
     /**
@@ -57,7 +59,7 @@ public class LZListTest {
     @Test
     public void toByteArrayReturnsCorrectValue() {
         byte[] ba = list.toByteArray();
-        assertEquals(9, ba.length);
+        assertEquals(5, ba.length);
     }
     
 }

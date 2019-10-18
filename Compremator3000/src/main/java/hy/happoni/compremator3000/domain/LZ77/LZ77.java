@@ -1,183 +1,265 @@
 package hy.happoni.compremator3000.domain.LZ77;
 
-// Tuodaan tarvittavia importeja, poistetaan myöhemmässä vaiheessa tarpeettomiksi käyneet.
-import java.util.Iterator;
-import java.util.List;
-import org.apache.commons.lang3.SerializationUtils;
+import hy.happoni.compremator3000.domain.LZW.ByteArray;
 
 /**
- * Luokka, joka huolehtii Lempel-Ziv -algoritmin (LZ77) toteutuksesta.
+ * Luokka, joka toteuttaa LZ77-algoritmin. Saa syötteenään tavulistan (byte
+ * array) ja pakkaa sen tupleiksi, jotka sisältävät tiedon ennalta tekstistä
+ * löytyneistä peräkkäisistä tavuista. Pakkaa tuplet lopulta tavulistaksi (byte
+ * array).
  */
 public class LZ77 {
 
-    // Lista, johon tuplet säilötään.
-    LZList compressedData;
+    // Apumuuttujia, joita tarvitaan koodissa.
+    LZList compressedData;                                                      // Lista, johon säilötään "koodipalat", tuplet (offset, length, next)
+    int dictionaryBegin;                                                        // Varsinainen liukuva etsintäikkuna on välillä dictionaryBegin - bufferEnd.
+    int dictionaryLength;                                                       // Sanakirjan maksimipituus.
+    int matchLength;                                                            // Osuman pituus  
+    int bufferEnd;                                                              // Bufferin loppu.
+    int byteCount;                                                              // Kertoo, missä kohtaa syötettä mennään.   
+    byte[] searchDictionary;                                                    // Byte array, jossa pidetään sanakirjaa.
+    int matchLocation;                                                          // Osuman sijainti sanakirjassa.
 
-    // Etsintäikkuna
-    String searchSubstring;
-
-    // Apumuuttujia, joita tarvitaan algoritmin toiminnassa.
-    int matchLength;
-    int matchLocation;
-    int charCount;
-    int searchWindowStart;
-    int bufferEnd;
-
-    // Sanakirja ja bufferi.
-    int dictionaryLength;
-    int bufferLength;
-
-    // Konstruktori, jolla voidaan asettaa halutut arvot sanakirjan ja bufferin pituudelle.
-    public LZ77(int dictionaryLength, int bufferLength) {
-        this.compressedData = new LZList();
-        this.dictionaryLength = dictionaryLength;
-        this.bufferLength = bufferLength;
-    }
-
-    // Parametriton konstruktori.
+    /**
+     * Konstruktorissa asetetaan joitain muuttujia ja erityisesti sanakirjan
+     * pituus. Pituus vaikuttaa pakkauden tehokkuutteen nopeuden kustannuksella.
+     * 16k on maksimi, koska käytetään tilan säästämiseksi shorteja integerien
+     * sijaan tupleissa.
+     */
     public LZ77() {
         this.compressedData = new LZList();
-        this.dictionaryLength = 1024;
-        this.bufferLength = 20;
+        this.dictionaryLength = 16000;
+        this.bufferEnd = 32;                                                    // Katsotaan aina 32 seuraavaa tavua (tai vähemmän, jos ollaan aivan lopussa)
+        this.byteCount = 0;
     }
 
     /**
-     * Metodilla asetetaan LZ77-algoritmin etsintäikkunan alkupiste.
+     * Metodilla asetetaan sanakirjan alkupiste. Alkupiste "liukuu"
+     * etsintäikkunan mukana.
      *
-     * @param charCount - tieto siitä, kuinka mones merkki on käsittelyssä
-     * @param dictionaryLength - tieto sanakirjan pituudesta
-     * @return charCount - dictionaryLength, jos se ei ole negatiivinen, muutoin
-     * palautetaan nolla
+     * @param byteCount - Sen tavun indeksi, jota ollaan seuraavaksi tutkimassa.
+     * @param dictionaryLength - Sanakirjan maksimipituus. Asetettu
+     * konstruktorissa.
+     * @return 0, jos ei olla vielä tutkittu tavuja yli sanakirjan
+     * maksimipituutta, muutoin tavun indeksi - sanakirjan maksimipituus.
      */
-    public int setSearchWindowStart(int charCount, int dictionaryLength) {
-        if (charCount - dictionaryLength >= 0) {
-            return charCount - dictionaryLength;
+    public int setDictionaryBegin(int byteCount, int dictionaryLength) {
+        if (byteCount - dictionaryLength >= 0) {
+            return byteCount - dictionaryLength;
         }
         return 0;
     }
 
     /**
-     * Metodilla asetetaan LZ77-algoritmin bufferin loppupiste.
+     * Metodilla asetetaan bufferin, eli myös etsintäikkunan loppupiste. Tämän
+     * yli ei siis tutkita tavuja.
      *
-     * @param charCount - tieto siitä, mones merkki on käsittelyssä
-     * @param bufferLength - tieto bufferin pituudesta
-     * @param inputLength - tieto pakattavana olevan syötteen pituudesta
-     * @return charCount + bufferLength, jos ne yhdessä ovat lyhyempi kuin
-     * syötteen pituus, muutoin syötteen pituus
+     * @param byteCount - Sen tavun indeksi, jota ollaan seuraavaksi tutkimassa.
+     * @param inputLength - Syötteen pituus.
+     * @return Jos ei olla lähellä syötteen loppua, eli tavun indeksi + bufferin
+     * pituus ovat alle syötteen pituuden, palautetaan tavun indeksi + bufferin
+     * pituus. Muutoin syötteen pituus.
      */
-    public int setBufferEnd(int charCount, int bufferLength, int inputLength) {
-        if (charCount + bufferLength < inputLength) {
-            return charCount + bufferLength;
+    public int setBufferEnd(int byteCount, int inputLength) {
+        if (byteCount + bufferEnd < inputLength) {
+            return byteCount + bufferEnd;
         }
         return inputLength;
     }
 
     /**
-     * Metodilla asetetaan ikkuna, josta etsitään osumia.
+     * Metodilla asetetaan sanakirja tavulistaksi, eli aina haluttu pala
+     * syötteestä listaksi, josta osumia haetaan.
      *
-     * @param input - pakattava merkkijono
-     * @param charCount - tieto siitä, mones merkki on käsittelyssä
-     * @param searchWindowStart - tieto etsintäikkunan alkupisteestä
-     * @return jos charCount on nolla, palautetaan tyhjä merkkijono, muulloin se
-     * osamerkkijono, joka on searchWindowStartin ja charCountin välissä
-     * syötteessä
+     * @param input - Syöte.
+     * @param byteCount - Tämänhetkisen tavun indeksi.
+     * @param dictionaryBegin - Sanakirjan alkupiste.
+     * @return Null, jos tutkitaan ensimmäistä tavua, muutoin sanakirjan
+     * kokoinen byte array.
      */
-    public String setSearchSubstring(String input, int charCount, int searchWindowStart) {
-        if (charCount == 0) {
-            return "";
+    public byte[] setSearchArray(byte[] input, int byteCount, int dictionaryBegin) {
+        if (byteCount == 0) {
+            return null;
         }
-        String searchSubbytes = input.substring(charCount - searchWindowStart);
-        return searchSubbytes;
+        byte[] searchArray = new byte[byteCount - dictionaryBegin];
+        for (int i = 0; i < searchArray.length; i++) {
+            searchArray[i] = input[dictionaryBegin + i];
+        }
+        return searchArray;
     }
 
-//    /**
-//     * Metodi, joka pakkaa annetun merkkijonon tupleiksi, eli ns. pakatun koodin
-//     * palasiksi.
-//     *
-//     * @param input - merkkijono, joka halutaan pakata.
-//     * @return compressedData - byte array listasta tupleja, jotka kertovat
-//     * "pakkauskoodin"
-//     */
-//    public byte[] compress(String input) {
-//
-//        // Käydään merkkijono läpi.
-//        charCount = 0;
-//        while (charCount < input.length()) {
-//            // Asetetaan etsintäikkunan alku.
-//            searchWindowStart = setSearchWindowStart(charCount, dictionaryLength);
-//            // Bufferin loppu.
-//            bufferEnd = setBufferEnd(charCount, bufferLength, input.length());
-//            // Otetaan pala etsintäikkunasta. Jos charCount on nolla, etsintäikkuna on tyhjä.
-//            searchSubstring = setSearchSubstring(input, charCount, searchWindowStart);
-//            // Haetaan etsintäikkunasta osumaa bufferin seuraavaan merkkiin.
-//            matchLength = 1;
-//            String searchTarget = input.substring(charCount, charCount + matchLength);
-//
-//            if (searchSubstring.contains(searchTarget)) {
-//                // Tällöin on saatu osuma yhden merkin pituiseen merkkijonoon. Tutkitaan, jatkuuko osuma pidemmälle. Ei kuitenkaan ylitetä bufferin pituutta.
-//                while (matchLength <= bufferLength) {
-//                    // Tutkitaan, miten pitkälle päästään.
-//                    searchTarget = input.substring(charCount, charCount + matchLength);
-//                    matchLocation = searchSubstring.indexOf(searchTarget);
-//
-//                    if ((matchLocation != -1) && (charCount + matchLength) < input.length()) {
-//                        matchLength++;
-//                    } else {
-//                        break;
-//                    }
-//                }
-//                // Asetetaan osuman pituus.
-//                matchLength--;
-//                // Haetaan etsintäikkunasta viimeisimmän osuman sijainti.
-//                matchLocation = searchSubstring.indexOf(input.substring(charCount, charCount + matchLength));
-//                // Kasvatetaan merkkilaskuria.
-//                charCount += matchLength;
-//
-//                // Laitetaan koodipala tietoon tupleen.
-//                int offset = (charCount < (dictionaryLength + matchLength)) ? charCount - matchLocation - matchLength : dictionaryLength - matchLocation;
-//                String nextChar = input.substring(charCount, charCount + 1);
-//                compressedData.add(new Tuple(offset, matchLength, nextChar));
-//            } else {
-//                String nextChar = input.substring(charCount, charCount + 1);
-//                compressedData.add(new Tuple(0, 0, nextChar));
-//            }
-//            // Kasvatetaan merkkilaskuria.
-//            charCount++;
-//        }
-//        
-//        return compressedData.toByteArray();
-//    }
+    /**
+     * Metodi, jolla asetetaan bufferi, jonka tavuja haetaan sanakirjasta. Sama
+     * idea kuin metodissa setSearchArray.
+     *
+     * @param input - Syöte.
+     * @param byteCount - Tavun indeksi.
+     * @param matchLength - Osuman pituus.
+     * @return Byte array, jossa bufferista otettu hakukohde.
+     */
+    public byte[] setSearchTarget(byte[] input, int byteCount, int matchLength) {
+        byte[] searchTarget = new byte[matchLength];
+        for (int i = 0; i < searchTarget.length; i++) {
+            searchTarget[i] = input[byteCount + i];
+        }
+        return searchTarget;
+    }
 
-//    /**
-//     * Metodi purkaa syötteenä annetun pakatun tiedoston, eli käytännössä listan
-//     * muuttujia tuple.
-//     *
-//     * @param compressedData - byte array listasta tupleja
-//     * @return reconData - toString()-metodin avulla muodostettu merkkijono.
-//     */
-//    public String decompress(byte[] compressedData) {
-//        List<Tuple> compressed = SerializationUtils.deserialize(compressedData);
-//
-//        // Luodaan dekoodattu merkkijono tähän talteen.
-//        StringBuilder reconData = new StringBuilder();
-//        // Haetaan tietoja tuple-listasta.
-//        Iterator<Tuple> iterator = compressed.iterator();
-//        while (iterator.hasNext()) {
-//            Tuple nextTuple = iterator.next();
-//            if (nextTuple.stringLength == 0) {
-//                // Ei osumia tälle merkille.
-//                reconData.append(nextTuple.nextChar);
-//            } else {
-//                // Tuple tietää osumista, jes.
-//                for (int i = 0; i < nextTuple.stringLength; i++) {
-//                    // iteroidaan, ja otetaan offsetin ja pituuden mukaan osumat jo rakennetuista paloista.
-//                    char workingChar = reconData.charAt(reconData.length() - nextTuple.offset);
-//                    reconData.append(workingChar);
-//                }
-//                // Lisätään osumattomat merkit.
-//                reconData.append(nextTuple.nextChar);
-//            }
-//        }
-//        return reconData.toString();
-//    }
+    /**
+     * Metodi kertoo jokseenkin tehokkaasti, onko taulukko toisen osataulukko.
+     * Käytetään tunnistamaan hakukohteet sanakirjasta.
+     *
+     * @param searchDictionary - Sanakirja.
+     * @param searchTarget - Hakukohde.
+     * @return True, jos hakukohde on sanakirjassa, muuten false.
+     */
+    public boolean isSubArray(byte[] searchDictionary, byte[] searchTarget) {
+        if (searchDictionary == null) {
+            return false;
+        }
+        int i = 0, j = 0;                                                       // Kuljetaan näillä taulukoissa.
+        while (i < searchDictionary.length && j < searchTarget.length) {        // Tsekataan molemmat samaan aikaan.
+            if (searchDictionary[i] == searchTarget[j]) {                       // Jos tulee osuma, kasvatetaan molempia laskureita.
+                i++;
+                j++;
+                if (j == searchTarget.length) {                                 // Jos hakukohde on käyty läpi, palauta true.
+                    return true;
+                }
+            } else {                                                            // Jos ei, resetoidaan hakukohde ja kasvatetaan vain i:tä.
+                i++;
+                j = 0;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Metodi kertoo osataulukon indeksin taulukossa. Olisi voinut yhdistää
+     * isSubArray-metodiin, mutta jäi nyt näin...
+     *
+     * @param searchDictionary - Sanakirja.
+     * @param searchTarget - Hakukohde.
+     * @return Hakukohteen indeksi sanakirjassa tai -1, jos sitä ei löydy
+     * sieltä.
+     */
+    public int indexOfByteArray(byte[] searchDictionary, byte[] searchTarget) {
+        int i = 0, j = 0;
+        while (i < searchDictionary.length && j < searchTarget.length) {
+            if (searchDictionary[i] == searchTarget[j]) {
+                i++;
+                j++;
+                if (j == searchTarget.length) {
+                    return i - j;
+                }
+            } else {
+                i++;
+                j = 0;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Metodilla pakataan annettu syöte tupleja hyväksi käyttäen pienempään
+     * tilaan.
+     *
+     * @param input - Syöte byte arrayna.
+     * @return Pakattu tuplelista byte arrayna.
+     */
+    public byte[] compress(byte[] input) {
+        int inputLength = input.length;
+
+        while (byteCount < input.length) {                                      // Tutkitaan niin kauan, kunnes tullaan syötteen loppuun.
+            dictionaryBegin = setDictionaryBegin(byteCount, dictionaryLength);  // Asetetaan sanakirjan alkuindeksi.
+            bufferEnd = setBufferEnd(byteCount, inputLength);                   // Asetetaan bufferin loppu, korkeintaan syötteen loppu.
+            searchDictionary = setSearchArray(input, byteCount, dictionaryBegin); // Asetetaan sanakirja, josta haetaan osumia byte arrayksi.
+            matchLength = 1;                                                    // Haetaan ensin yhtä tavua bufferista.
+            byte[] searchTarget = setSearchTarget(input, byteCount, matchLength); // Asetetaan haettava byte array.   
+
+            if (isSubArray(searchDictionary, searchTarget)) {                   // Tavu on jo sanakirjassa, eli saimme osuman yhden tavun mittaiseen tavujonoon.
+                while (matchLength <= bufferEnd) {                              // Tutkitaan, jatkuuko osuma pidemmälle, muttei ylitetä bufferin pituutta 32.
+                    searchTarget = setSearchTarget(input, byteCount, matchLength);
+                    matchLocation = indexOfByteArray(searchDictionary, searchTarget);
+                    if ((matchLocation != -1) && (byteCount + matchLength < input.length)) {
+                        matchLength++;
+                    } else {
+                        break;
+                    }
+                }
+
+                matchLength--;
+                searchTarget = setSearchTarget(input, byteCount, matchLength);
+                matchLocation = indexOfByteArray(searchDictionary, searchTarget);
+                byteCount += matchLength;
+
+                int offset = (byteCount < (dictionaryLength + matchLength)) ? byteCount - matchLocation - matchLength : dictionaryLength - matchLocation;
+                byte nextByte = input[byteCount];
+                compressedData.add(new Tuple(offset, matchLength, nextByte));
+            } else {
+                byte nextByte = input[byteCount];
+                compressedData.add(new Tuple(0, 0, nextByte));
+            }
+            byteCount++;
+        }
+
+        //System.out.println(compressedData.size());
+        return compressedData.toByteArray();
+    }
+
+    /**
+     * Metodi purkaa pakatun tiedoston takaisin alkuperäiseksi tiedostoksi.
+     *
+     * @param input - pakattu tiedosto
+     * @return - purettu tavulista
+     */
+    public byte[] decompress(byte[] input) {
+        ByteArray reconData = new ByteArray();                                  // Kootaan alkuperäinen tiedosto tänne.
+        LZList tuples = inputToTupleList(input);                                // Muodostetaan pakatun tiedoston tavuista lista tupleja.
+        
+        for (int i = 0; i < tuples.size(); i++) {                               
+            if (tuples.get(i).getByteLength() == 0) {
+                reconData.add(tuples.get(i).getNextByte());
+            } else {
+                for (int j = 0; j < tuples.get(i).getByteLength(); j++) {
+                    byte workingByte = reconData.get(reconData.size() - tuples.get(i).getOffset());
+                    reconData.add(workingByte);                    
+                }
+                reconData.add(tuples.get(i).getNextByte());
+            }
+        }
+        return reconData.getBytes();
+    }
+
+    /**
+     * Apumetodi, jolla muodostetaan pakatun tiedoston tavuista lista tupleja.
+     *
+     * @param input - pakattu tiedosto
+     * @return tuples - lista tupleja
+     */
+    public LZList inputToTupleList(byte[] input) {
+        LZList tuples = new LZList();
+
+        for (int i = 0; i < input.length; i = i + 5) {
+            byte[] offset = new byte[2];
+            byte[] length = new byte[2];
+            offset[0] = input[i];
+            offset[1] = input[i + 1];
+            length[0] = input[i + 2];
+            length[1] = input[i + 3];
+            tuples.add(new Tuple(bytesToShort(offset), bytesToShort(length), input[i + 4]));
+        }
+
+        return tuples;
+    }
+
+    /**
+     * Apumetodi byte arrayn muuntamiseen shortiksi.
+     *
+     * @param bytes - byte array
+     * @return haluttu short
+     */
+    public short bytesToShort(byte[] bytes) {
+        return (short) (((bytes[0] & 0xFF) << 8) | ((bytes[1] & 0xFF)));
+    }
+
 }

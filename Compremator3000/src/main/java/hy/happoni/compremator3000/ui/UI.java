@@ -1,19 +1,16 @@
 package hy.happoni.compremator3000.ui;
 
-// Scannerin import käyttäjän syötteiden lukua varten.
-import java.util.Scanner;
+import java.util.Scanner;                                                       // Scannerin import käyttäjän syötteiden lukua varten.
 
 /**
  * Tekstikäyttöliittymästä huolehtiva luokka.
  */
 public class UI {
 
-    // tarvittavia muuttujia
-    private final Scanner reader;
+    private final Scanner reader;                                               // tarvittavia muuttujia
     private final AppLogic logic;
     private String algoType;
 
-    // konstruktori
     public UI(AppLogic logic, Scanner reader) {
         this.reader = reader;
         this.logic = logic;
@@ -25,8 +22,7 @@ public class UI {
      * tulostaa otsikon ja kutsuu käyttöliittymän main menu -metodia.
      */
     public void startApp() {
-        // Ohjelman otsikko
-        System.out.println("COMPREMATOR3000");
+        System.out.println("COMPREMATOR3000");                                  // Ohjelman otsikko
         System.out.println("Text compression program using LZ77, LZW and/or LZSS.");
         mainMenu();
     }
@@ -38,10 +34,9 @@ public class UI {
      * suoritus.
      */
     private void mainMenu() {
-        // Main menun ohjeet. Epäkelvolla syötteellä silmukka jatkaa pyörimistään, kunnes annetaan kelvollinen syöte.
-        while (true) {
-            System.out.println();
-            System.out.println("What would you like to do?");
+        while (true) {                                                          // Main menun ohjeet.
+            System.out.println();                                               // Epäkelvolla syötteellä silmukka jatkaa pyörimistään,
+            System.out.println("What would you like to do?");                   // kunnes annetaan kelvollinen syöte.
             System.out.println("[1] -- Compress text file.");
             System.out.println("[2] -- Uncompress compressed file.");
             System.out.println("[x] -- Exit program");

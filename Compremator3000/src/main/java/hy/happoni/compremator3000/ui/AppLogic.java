@@ -15,6 +15,8 @@ public class AppLogic {
     private final FileIO fileIo;
     private final LZW lzw;
     private final LZ77New lz77;
+    private int originalSize;
+    private int newSize;
 
     // konstruktori
     public AppLogic() {
@@ -35,19 +37,38 @@ public class AppLogic {
      */
     public void compress(String fileName, String algoType) {
         byte[] data = fileIo.readFileToByteArray(fileName);
-        String stringData = fileIo.readFileToString(fileName);
         boolean success = false;
 
-        if (data != null || !stringData.equals("")) {
+        long timeAtBegin = System.currentTimeMillis();
+
+        if (data != null) {
+            originalSize = data.length;
+
             if (algoType.equals("lz77")) {
-                success = fileIo.writeCompressedFile(lz77.compress(data), fileName, ".lz77");
+                byte[] toBeCompressed = lz77.compress(data);
+                newSize = toBeCompressed.length;
+
+                success = fileIo.writeCompressedFile(toBeCompressed, fileName, ".lz77");
             } else if (algoType.equals("lzw")) {
-                success = fileIo.writeCompressedFile(lzw.compress(data), fileName, ".lzw");
+                byte[] toBeCompressed = lzw.compress(data);
+                newSize = toBeCompressed.length;
+
+                success = fileIo.writeCompressedFile(toBeCompressed, fileName, ".lzw");
             }
         }
         if (success) {
+            System.out.println();
             System.out.println("File compressed succesfully: " + fileName + "." + algoType);
+
+            long timeAtEnd = System.currentTimeMillis();
+
+            System.out.println("Original size: " + originalSize + " bytes");
+            System.out.println("Compressed size: " + newSize + " bytes");
+            System.out.println("Compressed size is " + Math.ceil((1.0 * newSize / originalSize) * 100) + " % of original size.");
+            System.out.println("Time elapsed: " + (timeAtEnd - timeAtBegin) + " ms");
+
         } else {
+            System.out.println();
             System.out.println("Compression failed.");
         }
     }
@@ -66,6 +87,8 @@ public class AppLogic {
         byte[] data = fileIo.readFileToByteArray(fileName);
         boolean success = false;
 
+        long timeAtBegin = System.currentTimeMillis();
+
         if (data != null) {
             if (fileName.contains(".lz77")) {
                 success = fileIo.writeBytesToFile((lz77.decompress(data)), (fileName.substring(0, fileName.length() - 5)));
@@ -75,6 +98,10 @@ public class AppLogic {
         }
         if (success) {
             System.out.println("File uncompressed succesfully.");
+
+            long timeAtEnd = System.currentTimeMillis();
+            System.out.println("Time elapsed: " + (timeAtEnd - timeAtBegin) + " ms");
+
         } else {
             System.out.println("Uncompression failed.");
         }

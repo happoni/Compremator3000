@@ -1,4 +1,4 @@
-package hy.happoni.compremator3000.ui;                                        
+package hy.happoni.compremator3000.ui;
 
 import hy.happoni.compremator3000.domain.LZW.LZW;                               // tarvittavat importit
 import hy.happoni.compremator3000.domain.LZ77.LZ77;
@@ -30,6 +30,7 @@ public class AppLogic {
      *
      * @param fileName - pakattavan tiedoston nimi
      * @param algoType - algoritmi, jolla pakkaus suoritetaan
+     * @return true, jos pakkaus onnistuu, muuten false
      */
     public boolean compress(String fileName, String algoType) {
         byte[] data = fileIo.readFileToByteArray(fileName);                     // luetaan data
@@ -57,7 +58,7 @@ public class AppLogic {
             System.out.println("Compressed size: " + newSize + " bytes");
             System.out.println("Compressed size is " + Math.ceil((1.0 * newSize / originalSize) * 100) + " % of original size.");
             System.out.println("Time elapsed: " + (timeAtEnd - timeAtBegin) + " ms");
-            
+
             return true;
         } else {                                                                // muuten tulostetaan virheviesti
             System.out.println();
@@ -74,6 +75,7 @@ public class AppLogic {
      * ei onnistu, antaa virheviestin.
      *
      * @param fileName - purettavan tiedoston nimi
+     * @return true, jos purkaminen onnistuu, muuten false
      */
     public boolean uncompress(String fileName) {
 
@@ -92,11 +94,11 @@ public class AppLogic {
             System.out.println("File uncompressed succesfully.");
             long timeAtEnd = System.currentTimeMillis();
             System.out.println("Time elapsed: " + (timeAtEnd - timeAtBegin) + " ms");
-            
+
             return true;
         } else {
             System.out.println("Uncompression failed.");
-            
+
             return false;
         }
     }

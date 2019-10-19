@@ -6,10 +6,6 @@ package hy.happoni.compremator3000.domain.LZ77;
  * (stringlength) ja osumaa seuraavasta merkistä (nextchar).
  */
 public class Tuple {
-//
-//    int offset;         // pisimmän sanakirjasta löytyvän osuman sijainti
-//    int stringLength;   // pisimmän osuman pituus
-//    byte nextByte;      // pisintä osumaa seuraava merkki
 
     short offset;
     short byteLength;
@@ -19,13 +15,10 @@ public class Tuple {
      * Konstruktorilla tupleen heti tietoon kaikki oleellinen.
      *
      * @param offset - pisimmän sanakirjasta löytyvän osuman sijainti
-     * @param stringLength - pisimmän osuman pituus
-     * @param nextByte
+     * @param byteLength - pisimmän osuman pituus
+     * @param nextByte - seuraava tavu
      */
     public Tuple(int offset, int byteLength, byte nextByte) {
-//        this.offset = offset;
-//        this.stringLength = stringLength;
-//        this.nextByte = nextByte;
     this.offset = (short) offset;
     this.byteLength = (short) byteLength;
     this.nextByte = nextByte;

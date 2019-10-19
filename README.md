@@ -1,10 +1,10 @@
 # Compremator3000 - Tiralabran harjoitustyö
-Tiralabran harjoitustyö, 2019, periodi 1. Toteutetaan Lempel-Ziv -pakkausalgoritmin muunnelmien pakkaustehokkuutta vertaileva ohjelma. Ohjelmalla voidaan pakata ja purkaa tekstitiedostoja valitulla algoritmilla sekä verrata algoritmien pakkaustehokkuutta.
+Tiralabran harjoitustyö, 2019, periodi 1. Toteutetaan kahden eri Lempel-Ziv -pakkausalgoritmin käytön mahdollistava tekstitiedostojen pakkausohjelma. Ohjelmalla voidaan
+pakata ja purkaa tekstitiedostoja valitulla algoritmilla. Ohjelma myös antaa tietoja pakkauksen tehokkuudesta.
 
 **Käytettävät algoritmit:**
 - LZ77 (Lempel-Ziv 1977)
 - LZW (Lempel-Ziv-Welch)
-- LZSS (Lempel-Ziv-Storer-Szymanski)
 
 Harjoitustyössä kirjoitetaan viikkoraportit edistymisestä.
 

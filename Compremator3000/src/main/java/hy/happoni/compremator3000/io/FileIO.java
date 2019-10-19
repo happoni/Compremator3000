@@ -1,7 +1,5 @@
-// pakkaus
 package hy.happoni.compremator3000.io;
 
-// tarvittavat importit
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,37 +10,7 @@ import java.nio.file.Paths;
 public class FileIO {
 
     /**
-     * Metodi, jolla luetaan pakattava tekstitiedosto.
-     *
-     * @param filePath - tekstitiedoston nimi
-     * @return - tekstitiedosto merkkijonona
-     */
-    public String readFileToString(String filePath) {
-        String input = "";
-        try {
-            input = new String(Files.readAllBytes(Paths.get(filePath)));
-        } catch (IOException e) {
-            System.out.println("Something went wrong, maybe file is not found.");
-        }
-        return input;
-    }
-
-    public char[] readFileToCharArray(String filePath) {
-        String s = "";
-        try {
-            s = new String(Files.readAllBytes(Paths.get(filePath)));
-        } catch (IOException e) {
-            System.out.println("Something went wrong, maybe file is not found.");
-        }
-        char[] input = new char[s.length()];
-        for (int i = 0; i < input.length; i++) {
-            input[i] = s.charAt(i);
-        }
-        return input;
-    }
-
-    /**
-     * Pakatun tiedoston lukeminen. Lukee tektitiedoston byte arrayksi. Heittää
+     * Pakatun tiedoston lukeminen. Lukee tekstitiedoston byte arrayksi. Heittää
      * IOExceptionin, jos lukeminen ei onnistu.
      *
      * @param filePath - tiedoston nimi
@@ -79,35 +47,14 @@ public class FileIO {
         return false;
     }
 
-    public boolean writeTuplesToFile(byte[] compressedData, String filePath, String algoType) {
-        try {
-            Files.write(Paths.get(filePath + algoType), compressedData);
-            return true;
-        } catch (IOException e) {
-            System.out.println("Something went wrong.");
-        }
-        return false;
-    }
-
     /**
-     * Puretun tiedoston kirjoittaminen tiedostoon. Kirjoittaa merkkijonon
-     * puretun tiedoston mukaan nimettyyn tiedostoon. Heittää IOExceptionin, jos
-     * kirjoittaminen ei onnistu.
+     * Metodilla kirjoitetaan byte array tiedostoon. Käytetään puretun tiedoston
+     * kirjoittamiseen.
      *
-     * @param uncompressed - merkkijonona purettu tiedosto
-     * @param filepath - tiedoston nimi
-     * @return - true, jos kirjoittaminen onnistuu, muuten false
+     * @param uncompressed - purettu tiedosto byte arrayna
+     * @param filepath - tiedoston nimi, johon purettu data tallennetaan
+     * @return - true, jos tallennus onnistuu, muuten false
      */
-    public boolean writeStringToFile(String uncompressed, String filepath) {
-        try {
-            Files.write(Paths.get(filepath), uncompressed.getBytes());
-            return true;
-        } catch (IOException e) {
-            System.out.println("Something has gone wrong.");
-        }
-        return false;
-    }
-
     public boolean writeBytesToFile(byte[] uncompressed, String filepath) {
         try {
             Files.write(Paths.get(filepath), uncompressed);

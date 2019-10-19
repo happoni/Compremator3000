@@ -118,5 +118,17 @@ public class LZ77Test {
         byte[] output = lz1.compress(input);
         assertEquals((9 * 5), output.length);
     }
-
+    
+    /**
+     * Testillä tarkistetaan, että pakatun tiedoston purkaminen sujuu oikein.
+     */
+    @Test
+    public void decompressWorksCorrectly() {
+        byte[] output = lz1.compress(input);
+        byte[] decompressed = lz1.decompress(output);
+        
+        for (int i = 0; i < decompressed.length; i++) {
+            assertEquals(input[i], decompressed[i]);
+        }
+    }
 }

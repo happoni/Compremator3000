@@ -31,7 +31,7 @@ public class AppLogic {
      * @param fileName - pakattavan tiedoston nimi
      * @param algoType - algoritmi, jolla pakkaus suoritetaan
      */
-    public void compress(String fileName, String algoType) {
+    public boolean compress(String fileName, String algoType) {
         byte[] data = fileIo.readFileToByteArray(fileName);                     // luetaan data
         boolean success = false;
 
@@ -57,10 +57,13 @@ public class AppLogic {
             System.out.println("Compressed size: " + newSize + " bytes");
             System.out.println("Compressed size is " + Math.ceil((1.0 * newSize / originalSize) * 100) + " % of original size.");
             System.out.println("Time elapsed: " + (timeAtEnd - timeAtBegin) + " ms");
+            
+            return true;
         } else {                                                                // muuten tulostetaan virheviesti
             System.out.println();
             System.out.println("Compression failed.");
         }
+        return false;
     }
 
     /**
@@ -72,7 +75,7 @@ public class AppLogic {
      *
      * @param fileName - purettavan tiedoston nimi
      */
-    public void uncompress(String fileName) {
+    public boolean uncompress(String fileName) {
 
         byte[] data = fileIo.readFileToByteArray(fileName);                     // luetaan pakattu tiedosto
         boolean success = false;
@@ -89,8 +92,12 @@ public class AppLogic {
             System.out.println("File uncompressed succesfully.");
             long timeAtEnd = System.currentTimeMillis();
             System.out.println("Time elapsed: " + (timeAtEnd - timeAtBegin) + " ms");
+            
+            return true;
         } else {
             System.out.println("Uncompression failed.");
+            
+            return false;
         }
     }
 }

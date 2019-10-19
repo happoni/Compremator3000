@@ -1,12 +1,9 @@
-// pakkaus
 package hy.happoni.compremator3000.io;
 
 import java.io.File;
 import java.io.FileWriter;
 import org.junit.After;
 import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,7 +18,6 @@ public class FileIOTest {
     // luodaan väliaikainen testikansio ja poikkeuksien testaaminen
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
-    public ExpectedException expectedEx = ExpectedException.none();
 
     File testReadFile;
     File testWriteFile;
@@ -31,7 +27,12 @@ public class FileIOTest {
     byte[] testBytes;
     FileIO fileIO;
 
-    // ennen testejä asetetaan sopiva testiteksti ja kirjoitetaan se testitiedostoon
+    /**
+     * Ennen testejä asetetaan sopiva testiteksti ja kirjoitetaan se
+     * testitiedostoon.
+     *
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
         testReadFile = testFolder.newFile("readfile.txt");
@@ -49,28 +50,19 @@ public class FileIOTest {
         fileIO = new FileIO();
     }
 
+    /**
+     * Testillä tarkistetaan, että tiedoston lukeminen byte arrayksi palauttaa
+     * oikeat tavut.
+     */
     @Test
-    public void readFileReturnsCorrectText() {
-        String returnedString = fileIO.readFileToString(testReadPath);
-        assertEquals(returnedString, testText);
-        assertFalse(returnedString.contains("666"));
-    }
-
-    @Test
-    public void readCompressedFileReturnsCorrectByteArray() {
+    public void readFileToByteArrayReturnsCorrectBytesWhenFileExists() {
         byte[] returnedBytes = fileIO.readFileToByteArray(testReadPath);
         Assert.assertArrayEquals(returnedBytes, testBytes);
     }
 
-//    @Test
-//    public void writeFileWritesCorrectText() {
-//        String correct = "Heippalappu rapussa.";
-//        fileIO.writeFile(correct, testWritePath);
-//        String tested = fileIO.readFileToString(testWritePath);
-//        assertEquals(correct, tested);
-//        assertFalse(tested.equals("ei ole oikein"));
-//    }
-
+    /**
+     * Testillä tarkistetaan, että pakattu tiedosto kirjoitetaan oikein tiedostoon.
+     */
     @Test
     public void writeCompressedFileWritesCorrectText() {
         byte[] correct = testBytes;
@@ -79,6 +71,17 @@ public class FileIOTest {
         Assert.assertArrayEquals(correct, tested);
     }
 
+    /**
+     * Tetillä tarkistetaan, että purettu tiedosto kirjoitetaan oikein.
+     */
+    @Test
+    public void writeBytesToFileWritesCorrect() {
+        byte[] correct = testBytes;
+        fileIO.writeBytesToFile(testBytes, testWritePath);
+        byte[] tested = fileIO.readFileToByteArray(testWritePath);
+        Assert.assertArrayEquals(correct, tested);
+    }
+    
     @After
     public void tearDown() {
         testReadFile.delete();

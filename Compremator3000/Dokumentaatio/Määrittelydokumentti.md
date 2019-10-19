@@ -10,8 +10,6 @@ Projektissa käytetään Lempel-Zivin algoritmin eri muunnelmia. Algoritmit, jot
 - Lempel-Ziv-Welch (LZW), Lempelin ja Zivin yhdessä Terry Welchin kanssa vuonna 1984 julkaisema, LZ77:n paranneltu implementaatio.
 - Lempel-Ziv-Storer-Szymanski (LZSS), James Storerin ja Thomas Szymanskin vuonna 1982 luoma pakkausalgoritmi, joka perustuu LZ77:aan.
 
-*Projektissa käytettäviä tietorakenteja tullaan päivittämään...*
-
 ## Ratkaistavat ongelmat
 
 Projektin on tarkoitus ratkaista miten tiedostoja voidaan pakata pienempään tilaan niin, että ne ovat palautettavissa takaisin alkuperäiseen muotoonsa. Erityisesti

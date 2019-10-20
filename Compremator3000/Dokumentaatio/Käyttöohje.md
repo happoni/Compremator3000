@@ -40,7 +40,7 @@ Checkstylen tarkistusraportin saa selaimessa auki avaamalla tiedoston */target/s
 
 ## Suoritettava ohjelma
 
-Ohjelman voi ladata [täältä]() tai voit generoida jar-tiedoston yllä olevien ohjeiden mukaan.
+Ohjelman voi ladata [täältä](https://github.com/happoni/Compremator3000/releases/tag/v1.0) tai voit generoida jar-tiedoston yllä olevien ohjeiden mukaan.
 
 # Ohjelman käyttö
 

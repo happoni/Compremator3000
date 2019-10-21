@@ -21,7 +21,9 @@ Algoritmit toteuttavia luokkia on testattu testiluokissa [LZTest](https://github
 
 ### Testikattavuus
 
-Tämän hetkinen testikattavuus (käyttöliittymä mukaan luettuna) on 62 %. *Tähän myöhemmin graafinenkin esitys.*
+Testikattavuus käyttöliittymä mukaan luettuna on 84 %.
+
+[Testikattavuus](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/Dokumentaatio/testikattavuus.png)
 
 ## Algoritmien tehokkuuden vertailu
 

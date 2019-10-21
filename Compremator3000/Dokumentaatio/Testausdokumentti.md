@@ -1,18 +1,18 @@
 # Testausdokumentti
 
 Ohjelmaa on testattu sekä automaattisilla testeillä että manuaalisesti. Manuaalisilla testeillä on huolehdittu lähinnä käyttöliittymän testaamisesta. Automaattiset testit
-on toteutettu JUnitilla ja tällä hetkellä on suoritettu vain yksikkötestausta.
+on toteutettu JUnitilla.
 
 ## Yksikkö- ja integraatiotestaus
 
 ### Sovelluslogiikan testaus
 
-...
+Sovelluslogiikkaa testataan automaattisella testillä testiluokassa [AppLogicTest](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/src/test/java/hy/happoni/compremator3000/ui/AppLogicTest.java).
 
 ### I/O -käsittelyn testaus
 
 Tiedon lukemisesta ja tallentamisesta huolehtivaa luokkaa on testattu testiluokassa [FileIOTest](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/src/test/java/hy/happoni/compremator3000/io/FileIOTest.java).
-Testeissä on luotu JUnitin *TemporaryFolder*:n avulla tilapäisiä testitiedostoja. Poikkeustilanteiden (Exception) testaus ei ole vielä täysin kattavaa.
+Testeissä on luotu JUnitin *TemporaryFolder*:n avulla tilapäisiä testitiedostoja. Poikkeustilanteita (Exception) ei ole testattu.
 
 ### Algoritmien testaus
 
@@ -24,6 +24,10 @@ Algoritmit toteuttavia luokkia on testattu testiluokissa [LZTest](https://github
 Testikattavuus käyttöliittymä mukaan luettuna on 84 %.
 
 ![Testikattavuus](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/Dokumentaatio/testikattavuus.png)
+
+## Järjestelmätestaus
+
+Sovelluksen järjestelmätestaaminen on suoritettu manuaalisesti. Pakattujen ja purettujen tiedostojen yhteneväisyys alkuperäiseen tiedostoon on testattu manuaalisesti.
 
 ## Algoritmien tehokkuuden vertailu
 
@@ -60,3 +64,5 @@ Tulokset graafisesti esitettyinä:
 ### Johtopäätöksiä
 
 LZ77-algoritmin aikavaativuus kasvaa samassa suhteessa syötteen kanssa. Koska algoritmia ei alkujaankaan ole kovin nopea, se johtaa äkkiä hitaaseen pakkaamiseen.
+Toisaalta LZ77:n purkaminen on hyvin yksinkertaista ja nopeaa. LZW-algoritmia on optimoitu paljon enemmän ja se kestää erittäin paljon paremmin syötteen koon kasvun.
+Vaikka purkaminen on hitaampaa kuin LZ77:lla, se on kuitenkin suhteellisen nopeaa.

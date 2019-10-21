@@ -26,12 +26,27 @@ Tämän hetkinen testikattavuus (käyttöliittymä mukaan luettuna) on 62 %. *T�
 
 ## Algoritmien tehokkuuden vertailu
 
-*Tähän palataan myöhemmin.*
+Algoritmeja vertailtiin viidellä erikokoisella tekstitiedostolla. Tiedostot pakattiin ja purettiin erikseen molemmilla algoritmeilla. Tutkittiin sekä pakkaustehokkuutta
+että pakkaamisen ja purkamisen nopeutta.
 
 ### Testisyötteet
 
-...
+Kaikki syötteet ovat tekstitiedostoja (.txt). Syötteiden koot:
+1. 14 197 bytes
+2. 161 244 bytes
+3. 647 912 bytes
+4. 1 253 865 bytes
+5. 3 268 374 bytes
 
 ### Tulokset
 
-...
+Tulokset taulukkona:
+
+Tiedostokoko | LZ77 | LZ77 % | LZ77-pakkausaika | LZ77-purkuaika | LZW | LZW % | LZW-pakkausaika | LZW-purkuaika
+--- | --- | --- | --- | --- | --- | --- | --- | ---
+14 197 | 12 855 | 91 % | 88 ms | 8 ms | 9696 | 68 % | 14 ms | 24 ms
+161 244 | 124 500 | 77 % | 1187 ms | 23 ms | 74 930 | 46 % | 68 ms | 82 ms
+647 912 | 509 945 | 79 % | 4118 ms | 59 ms | 274 494 | 42 % | 192 ms | 371 ms
+1 253 865 | 1 030 635 | 82 % | 5811 ms | 20 ms | 587 608 | 47 % | 336 ms | 477 ms
+3 268 374 | 2 735 265 | 84 % | 19324 ms | 60 ms | 1 468 138 | 45 % | 781 ms | 796 ms
+

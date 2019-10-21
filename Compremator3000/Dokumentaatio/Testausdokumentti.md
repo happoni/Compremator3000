@@ -16,9 +16,8 @@ Testeissä on luotu JUnitin *TemporaryFolder*:n avulla tilapäisiä testitiedost
 
 ### Algoritmien testaus
 
-Algoritmit toteuttavia luokkia on testattu testiluokissa [LZTest](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/src/test/java/hy/happoni/compremator3000/domain/LZTest.java),
-[LZWTest](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/src/test/java/hy/happoni/compremator3000/domain/LZWTest.java) ja 
-[LZSSTest](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/src/test/java/hy/happoni/compremator3000/domain/LZSSTest.java).
+Algoritmit toteuttavia luokkia on testattu testiluokissa [LZTest](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/src/test/java/hy/happoni/compremator3000/domain/LZTest.java) ja
+[LZWTest](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/src/test/java/hy/happoni/compremator3000/domain/LZWTest.java).
 
 ### Testikattavuus
 
@@ -50,3 +49,12 @@ Tiedostokoko | LZ77 | LZ77 % | LZ77-pakkausaika | LZ77-purkuaika | LZW | LZW % |
 1 253 865 | 1 030 635 | 82 % | 5811 ms | 20 ms | 587 608 | 47 % | 336 ms | 477 ms
 3 268 374 | 2 735 265 | 84 % | 19324 ms | 60 ms | 1 468 138 | 45 % | 781 ms | 796 ms
 
+Tulokset graafisesti esitettyinä:
+
+![Pakkaustehokkuus](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/Dokumentaatio/pakkaustehokkuus.PNG)
+
+![Pakkaamisen ja purkamisen nopeudet](https://github.com/happoni/Compremator3000/blob/master/Compremator3000/Dokumentaatio/nopeudet.PNG)
+
+### Johtopäätöksiä
+
+LZ77-algoritmin aikavaativuus kasvaa samassa suhteessa syötteen kanssa. Koska algoritmia ei alkujaankaan ole kovin nopea, se johtaa äkkiä hitaaseen pakkaamiseen.
